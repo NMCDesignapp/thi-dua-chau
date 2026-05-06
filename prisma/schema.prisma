@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider  = "sqlite"
   url       = env("DATABASE_URL")
 }
 
@@ -38,6 +38,15 @@ model Contest {
   targetType      String   @default("tvv")           // tvv | nhom
   bonusTiers      String                     // JSON string của mảng BonusTier
   participants    String   @default("[]")    // JSON string của mảng Participant
+  // Phase 2 fields
+  usePhase2       Boolean  @default(false)   // Có sử dụng giai đoạn 2
+  phase2StartDate DateTime?                  // Ngày bắt đầu giai đoạn 2
+  phase2EndDate   DateTime?                  // Ngày kết thúc giai đoạn 2
+  bonusTiers2     String   @default("[]")    // JSON string của mảng BonusTier GĐ2
+  // Secondary conditions
+  useSecondaryCondition Boolean @default(false) // Có sử dụng điều kiện phụ
+  secondaryAFYPMin Float   @default(0)       // AFYP tối thiểu (VND)
+  secondaryIPMin   Float   @default(0)       // IP tối thiểu (VND)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }

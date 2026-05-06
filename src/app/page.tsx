@@ -18,7 +18,7 @@ import {
   Download, X, RefreshCw, Link, Loader2, Printer, Copy, Save, BookmarkPlus,
   Star, Sparkles, Target, Award, Users, Banknote, CalendarRange, Zap, Gift,
   UserCheck, Percent, Image as ImageIcon, ChevronDown, ChevronUp, Upload,
-  FileSpreadsheet, UserPlus, ListChecks, UserCog,
+  FileSpreadsheet, UserPlus, ListChecks, UserCog, Shield, Layers,
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { toBlob } from 'html-to-image';
@@ -57,6 +57,8 @@ interface SavedContest {
   id: string; title: string; startDate: string; endDate: string;
   issueDate: string | null; conditionType: string; targetType: string;
   bonusTiers: string; participants: string; createdAt: string; updatedAt: string;
+  usePhase2?: boolean; phase2StartDate?: string | null; phase2EndDate?: string | null; bonusTiers2?: string;
+  useSecondaryCondition?: boolean; secondaryAFYPMin?: number; secondaryIPMin?: number;
 }
 
 type ConditionType = 'per_contract' | 'total_fyp' | 'activity_round' | 'activity_round_standard' | 'nyd_activity' | 'nyd_fyp';
@@ -123,13 +125,15 @@ function getConditionLabel(ct: ConditionType): string {
 
 // ─── ContestPoster Component ───────────────────────────────────────────────────
 
-function ContestPoster({ contestTitle, startDate, endDate, conditionType, targetType, sortedTiers, filteredContracts, groupedData, nydData, totalFYP, totalBonus, achievedCount, notAchievedCount, formatCurrency: fc, formatNumber: fn, formatDate: fd, isPreview = false }: {
+function ContestPoster({ contestTitle, startDate, endDate, conditionType, targetType, sortedTiers, sortedTiers2, filteredContracts, groupedData, nydData, totalFYP, totalBonus, achievedCount, notAchievedCount, formatCurrency: fc, formatNumber: fn, formatDate: fd, isPreview = false, usePhase2, phase1DateRange, phase2DateRange, useSecondaryCondition, secondaryAFYPMin, secondaryIPMin, totalBonus2 }: {
   contestTitle: string; startDate: string; endDate: string; conditionType: ConditionType;
-  targetType: TargetType; sortedTiers: BonusTier[]; filteredContracts: Contract[];
+  targetType: TargetType; sortedTiers: BonusTier[]; sortedTiers2: BonusTier[]; filteredContracts: Contract[];
   groupedData: GroupData[]; nydData: NYDData[]; totalFYP: number; totalBonus: number;
   achievedCount: number; notAchievedCount: number;
   formatCurrency: (n: number) => string; formatNumber: (n: number) => string;
   formatDate: (d: string) => string; isPreview?: boolean;
+  usePhase2?: boolean; phase1DateRange?: string; phase2DateRange?: string;
+  useSecondaryCondition?: boolean; secondaryAFYPMin?: number; secondaryIPMin?: number; totalBonus2?: number;
 }) {
   const rowCount = targetType === 'nhom' ? groupedData.length : targetType === 'nyd' ? nydData.length : filteredContracts.length;
   const hasData = rowCount > 0;
@@ -154,15 +158,24 @@ function ContestPoster({ contestTitle, startDate, endDate, conditionType, target
             <h2 className="text-base sm:text-lg font-extrabold text-white tracking-wide leading-tight break-words">{contestTitle || 'CHƯƠNG TRÌNH THI ĐUA'}</h2>
             <div className="flex items-center gap-2 mt-1 flex-wrap">
               <div className="flex items-center gap-1 text-emerald-200 text-xs"><CalendarRange className="w-3 h-3" /><span>{startDate ? fd(startDate) : '...'} — {endDate ? fd(endDate) : '...'}</span></div>
+              {usePhase2 && phase2DateRange && <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-400/20 text-blue-200"><Layers className="w-3 h-3" />GĐ2: {phase2DateRange}</span>}
               <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-white/15 text-emerald-100"><Target className="w-3 h-3" />{getConditionLabel(conditionType)}</span>
               <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-white/15 text-sky-100">{targetLabel}</span>
+              {useSecondaryCondition && ((secondaryAFYPMin || 0) > 0 || (secondaryIPMin || 0) > 0) && <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-teal-400/20 text-teal-200"><Shield className="w-3 h-3" />ĐK phụ{(secondaryAFYPMin || 0) > 0 ? `: AFYP≥${fn(secondaryAFYPMin || 0)}` : ''}{(secondaryIPMin || 0) > 0 ? `: IP≥${fn(secondaryIPMin || 0)}` : ''}</span>}
             </div>
           </div>
         </div>
         <div className="flex gap-2 overflow-x-auto pb-1 mb-3 scrollbar-none">
           {sortedTiers.map((tier, i) => (
             <div key={tier.id} className={`flex-shrink-0 rounded-lg px-2.5 py-1.5 bg-gradient-to-br ${tierColors[i % tierColors.length]} text-white min-w-[100px] shadow-md`}>
-              <div className="flex items-center gap-1 mb-0.5">{tier.bonusType === 'gift' ? <Gift className="w-3 h-3 opacity-80" /> : tier.bonusType === 'percent' ? <Percent className="w-3 h-3 opacity-80" /> : tier.bonusType === 'money_per_round' ? <Zap className="w-3 h-3 opacity-80" /> : <Sparkles className="w-3 h-3 opacity-80" />}<span className="text-[9px] font-bold uppercase opacity-90">Mức {i + 1}</span></div>
+              <div className="flex items-center gap-1 mb-0.5">{tier.bonusType === 'gift' ? <Gift className="w-3 h-3 opacity-80" /> : tier.bonusType === 'percent' ? <Percent className="w-3 h-3 opacity-80" /> : tier.bonusType === 'money_per_round' ? <Zap className="w-3 h-3 opacity-80" /> : <Sparkles className="w-3 h-3 opacity-80" />}<span className="text-[9px] font-bold uppercase opacity-90">{usePhase2 ? `GĐ1 Mức ${i + 1}` : `Mức ${i + 1}`}</span></div>
+              <div className="text-[10px] font-semibold leading-tight">{isActivityRoundMode(conditionType) || conditionType === 'nyd_activity' ? `${tier.minFYP}${tier.maxFYP ? ` - ${tier.maxFYP}` : ' ↑'} lượt` : `${fc(tier.minFYP)}${tier.maxFYP ? ` - ${fc(tier.maxFYP)}` : ' ↑'}`}</div>
+              <div className="text-xs font-extrabold mt-0.5 truncate" title={formatBonus(tier)}>{formatBonus(tier)}</div>
+            </div>
+          ))}
+          {usePhase2 && sortedTiers2.length > 0 && sortedTiers2.map((tier, i) => (
+            <div key={`p2-${tier.id}`} className="flex-shrink-0 rounded-lg px-2.5 py-1.5 bg-gradient-to-br from-blue-400 to-indigo-500 text-white min-w-[100px] shadow-md">
+              <div className="flex items-center gap-1 mb-0.5">{tier.bonusType === 'gift' ? <Gift className="w-3 h-3 opacity-80" /> : tier.bonusType === 'percent' ? <Percent className="w-3 h-3 opacity-80" /> : tier.bonusType === 'money_per_round' ? <Zap className="w-3 h-3 opacity-80" /> : <Sparkles className="w-3 h-3 opacity-80" />}<span className="text-[9px] font-bold uppercase opacity-90">GĐ2 Mức {i + 1}</span></div>
               <div className="text-[10px] font-semibold leading-tight">{isActivityRoundMode(conditionType) || conditionType === 'nyd_activity' ? `${tier.minFYP}${tier.maxFYP ? ` - ${tier.maxFYP}` : ' ↑'} lượt` : `${fc(tier.minFYP)}${tier.maxFYP ? ` - ${fc(tier.maxFYP)}` : ' ↑'}`}</div>
               <div className="text-xs font-extrabold mt-0.5 truncate" title={formatBonus(tier)}>{formatBonus(tier)}</div>
             </div>
@@ -223,6 +236,15 @@ export default function Home() {
   const [hideNotAchieved, setHideNotAchieved] = useState(false);
   // Exporting image flag (hide UI controls in export)
   const [isExporting, setIsExporting] = useState(false);
+  // Phase 2 (Giai đoạn 2)
+  const [usePhase2, setUsePhase2] = useState(false);
+  const [phase2StartDate, setPhase2StartDate] = useState('');
+  const [phase2EndDate, setPhase2EndDate] = useState('');
+  const [bonusTiers2, setBonusTiers2] = useState<BonusTier[]>([]);
+  // Secondary conditions (Điều kiện phụ)
+  const [useSecondaryCondition, setUseSecondaryCondition] = useState(false);
+  const [secondaryAFYPMin, setSecondaryAFYPMin] = useState(0); // in VND
+  const [secondaryIPMin, setSecondaryIPMin] = useState(0); // in VND
   // Refs
   const printRef = useRef<HTMLDivElement>(null);
   const shareRef = useRef<HTMLDivElement>(null);
@@ -263,6 +285,12 @@ export default function Home() {
     if (endDate) { const end = new Date(endDate); end.setHours(23, 59, 59, 999); results = results.filter((c) => new Date(c.effectiveDate) <= end); }
     if (issueDate) { const issue = new Date(issueDate); issue.setHours(23, 59, 59, 999); results = results.filter((c) => new Date(c.issueDate) <= issue); }
 
+    // Apply secondary conditions (Điều kiện phụ)
+    if (useSecondaryCondition) {
+      if (secondaryAFYPMin > 0) results = results.filter((c) => c.afyp >= secondaryAFYPMin);
+      if (secondaryIPMin > 0) results = results.filter((c) => c.fyp >= secondaryIPMin);
+    }
+
     // Apply participant filter
     if (useParticipantFilter && participants.length > 0) {
       const allowedCodes = new Set(participants.map(p => p.maSo));
@@ -273,7 +301,7 @@ export default function Home() {
     setFilteredContracts(results);
     if (results.length === 0) toast({ title: 'Thông báo', description: 'Không tìm thấy hợp đồng nào phù hợp' });
     else toast({ title: 'Thành công', description: `Tìm thấy ${results.length} hợp đồng` });
-  }, [startDate, endDate, issueDate, contracts, useParticipantFilter, participants]);
+  }, [startDate, endDate, issueDate, contracts, useParticipantFilter, participants, useSecondaryCondition, secondaryAFYPMin, secondaryIPMin]);
 
   const handleSearchRef = useRef(handleSearch);
   handleSearchRef.current = handleSearch;
@@ -560,13 +588,47 @@ export default function Home() {
   const removeBonusTier = (id: string) => { if (bonusTiers.length <= 1) { toast({ title: 'Thông báo', description: 'Phải có ít nhất một mức thưởng' }); return; } setBonusTiers(bonusTiers.filter((t) => t.id !== id)); };
   const updateBonusTier = (id: string, field: keyof BonusTier, value: string | number | null) => setBonusTiers(bonusTiers.map((t) => (t.id === id ? { ...t, [field]: value } : t)));
 
+  // ─── Bonus Tier 2 CRUD (Phase 2) ────────────────────────────────────────
+
+  const addBonusTier2 = () => setBonusTiers2([...bonusTiers2, { id: crypto.randomUUID(), minFYP: 0, maxFYP: null, bonusAmount: 0, bonusType: 'money', bonusText: '', bonusPercent: 0 }]);
+  const removeBonusTier2 = (id: string) => { if (bonusTiers2.length <= 1) { toast({ title: 'Thông báo', description: 'Phải có ít nhất một mức thưởng GĐ2' }); return; } setBonusTiers2(bonusTiers2.filter((t) => t.id !== id)); };
+  const updateBonusTier2 = (id: string, field: keyof BonusTier, value: string | number | null) => setBonusTiers2(bonusTiers2.map((t) => (t.id === id ? { ...t, [field]: value } : t)));
+
+  // ─── Phase 2 Bonus Calculations ──────────────────────────────────────────
+
+  const calculateBonus2 = useCallback((fyp: number): { tier: BonusTier | null; tierIndex: number } => {
+    const sortedTiers2 = [...bonusTiers2].sort((a, b) => a.minFYP - b.minFYP);
+    for (let i = sortedTiers2.length - 1; i >= 0; i--) { const tier = sortedTiers2[i]; if (fyp >= tier.minFYP) return { tier, tierIndex: i }; }
+    return { tier: null, tierIndex: -1 };
+  }, [bonusTiers2]);
+
+  const getBonusAmount2 = useCallback((fyp: number, rounds?: number): number => {
+    const { tier } = calculateBonus2(fyp); if (!tier) return 0;
+    if (tier.bonusType === 'percent') return tier.bonusPercent / 100 * fyp;
+    if (tier.bonusType === 'money_per_round') return tier.bonusAmount * (rounds || 0);
+    return tier.bonusAmount;
+  }, [calculateBonus2]);
+
+  const calculateActivityRoundBonus2 = useCallback((activityRounds: number): { tier: BonusTier | null; tierIndex: number } => {
+    const sortedTiers2 = [...bonusTiers2].sort((a, b) => a.minFYP - b.minFYP);
+    for (let i = sortedTiers2.length - 1; i >= 0; i--) { const tier = sortedTiers2[i]; if (activityRounds >= tier.minFYP) return { tier, tierIndex: i }; }
+    return { tier: null, tierIndex: -1 };
+  }, [bonusTiers2]);
+
+  const getActivityRoundBonusAmount2 = useCallback((activityRounds: number, groupTotalFYP?: number): number => {
+    const { tier } = calculateActivityRoundBonus2(activityRounds); if (!tier) return 0;
+    if (tier.bonusType === 'money_per_round') return tier.bonusAmount * activityRounds;
+    if (tier.bonusType === 'percent' && groupTotalFYP) return tier.bonusPercent / 100 * groupTotalFYP;
+    return tier.bonusAmount;
+  }, [calculateActivityRoundBonus2]);
+
   // ─── Save/Load Contest ────────────────────────────────────────────────────
 
   const handleSaveContest = async () => {
     if (!contestTitle) { toast({ title: 'Lỗi', description: 'Nhập tên chương trình' }); return; }
     setIsSaving(true);
     try {
-      const res = await fetch('/api/contests', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: contestTitle, startDate, endDate, issueDate: issueDate || undefined, conditionType, targetType, bonusTiers: JSON.stringify(bonusTiers), participants: JSON.stringify(participants) }) });
+      const res = await fetch('/api/contests', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: contestTitle, startDate, endDate, issueDate: issueDate || undefined, conditionType, targetType, bonusTiers: JSON.stringify(bonusTiers), participants: JSON.stringify(participants), usePhase2, phase2StartDate: phase2StartDate || undefined, phase2EndDate: phase2EndDate || undefined, bonusTiers2: JSON.stringify(bonusTiers2), useSecondaryCondition, secondaryAFYPMin, secondaryIPMin }) });
       if (res.ok) { const data = await res.json(); toast({ title: 'Thành công', description: data.message }); fetchSavedContests(); }
       else toast({ title: 'Lỗi', description: 'Không thể lưu', variant: 'destructive' });
     } catch { toast({ title: 'Lỗi', description: 'Không thể lưu', variant: 'destructive' }); }
@@ -584,6 +646,15 @@ export default function Home() {
     try { const tiers = JSON.parse(contest.bonusTiers); if (Array.isArray(tiers)) setBonusTiers(tiers); } catch { /* ignore */ }
     // Restore participants
     try { const p = JSON.parse(contest.participants || '[]'); if (Array.isArray(p) && p.length > 0) { setParticipants(p); setUseParticipantFilter(true); } else { setParticipants([]); setUseParticipantFilter(false); } } catch { setParticipants([]); setUseParticipantFilter(false); }
+    // Restore Phase 2
+    setUsePhase2(contest.usePhase2 || false);
+    setPhase2StartDate(contest.phase2StartDate ? new Date(contest.phase2StartDate).toISOString().slice(0, 10) : '');
+    setPhase2EndDate(contest.phase2EndDate ? new Date(contest.phase2EndDate).toISOString().slice(0, 10) : '');
+    try { const tiers2 = JSON.parse(contest.bonusTiers2 || '[]'); if (Array.isArray(tiers2)) setBonusTiers2(tiers2); else setBonusTiers2([]); } catch { setBonusTiers2([]); }
+    // Restore Secondary conditions
+    setUseSecondaryCondition(contest.useSecondaryCondition || false);
+    setSecondaryAFYPMin(contest.secondaryAFYPMin || 0);
+    setSecondaryIPMin(contest.secondaryIPMin || 0);
     setTimeout(() => handleSearchRef.current(), 100);
   };
 
@@ -741,7 +812,15 @@ export default function Home() {
     if (filteredContracts.length === 0 && nydData.length === 0 && groupedData.length === 0) return;
     const sortedTiers = [...bonusTiers].sort((a, b) => a.minFYP - b.minFYP);
     let text = `\u{1F3C6} ${contestTitle}\n\u{1F4C5} ${dateRangeStr || 'Từ ... đến ...'}\n\u{1F3AF} ${targetType === 'tvv' ? 'TVV' : targetType === 'nyd' ? 'NYD' : 'Nhóm'}\n━━━━━━━━━━━━━━━━━━━━\n📊 Mức thưởng:\n`;
-    sortedTiers.forEach((t, i) => { text += `  Mức ${i + 1}: ${isActivityRoundMode(conditionType) || conditionType === 'nyd_activity' ? `${t.minFYP}${t.maxFYP ? ` - ${t.maxFYP}` : ' ↑'} lượt` : `${formatCurrency(t.minFYP)}${t.maxFYP ? ` - ${formatCurrency(t.maxFYP)}` : ' ↑'}`} → ${formatBonus(t)}\n`; });
+    sortedTiers.forEach((t, i) => { text += `  ${usePhase2 ? 'GĐ1 ' : ''}Mức ${i + 1}: ${isActivityRoundMode(conditionType) || conditionType === 'nyd_activity' ? `${t.minFYP}${t.maxFYP ? ` - ${t.maxFYP}` : ' ↑'} lượt` : `${formatCurrency(t.minFYP)}${t.maxFYP ? ` - ${formatCurrency(t.maxFYP)}` : ' ↑'}`} → ${formatBonus(t)}\n`; });
+    if (usePhase2 && bonusTiers2.length > 0) {
+      const sortedTiers2 = [...bonusTiers2].sort((a, b) => a.minFYP - b.minFYP);
+      text += `\n📊 Mức thưởng GĐ2 (${phase2DateRange}):\n`;
+      sortedTiers2.forEach((t, i) => { text += `  GĐ2 Mức ${i + 1}: ${isActivityRoundMode(conditionType) || conditionType === 'nyd_activity' ? `${t.minFYP}${t.maxFYP ? ` - ${t.maxFYP}` : ' ↑'} lượt` : `${formatCurrency(t.minFYP)}${t.maxFYP ? ` - ${formatCurrency(t.maxFYP)}` : ' ↑'}`} → ${formatBonus(t)}\n`; });
+    }
+    if (useSecondaryCondition && (secondaryAFYPMin > 0 || secondaryIPMin > 0)) {
+      text += `\n🛡️ ĐK phụ:${secondaryAFYPMin > 0 ? ` AFYP ≥ ${formatNumber(secondaryAFYPMin)}` : ''}${secondaryIPMin > 0 ? ` IP ≥ ${formatNumber(secondaryIPMin)}` : ''}\n`;
+    }
     text += `━━━━━━━━━━━━━━━━━━━━\n`;
 
     if (targetType === 'nyd') {
@@ -779,24 +858,55 @@ export default function Home() {
     if (filteredContracts.length === 0 && nydData.length === 0 && groupedData.length === 0) { toast({ title: 'Thông báo', description: 'Không có dữ liệu' }); return; }
     let headers: string[];
     let rows: (string | number)[][];
+    const hasP2 = usePhase2 && bonusTiers2.length > 0;
 
     if (targetType === 'nyd') {
-      headers = ['STT', 'Nhóm', 'Mã Số', 'Họ Tên', 'Chức Vụ', conditionType === 'nyd_activity' ? 'Lượt TVVm HĐ' : 'FYP TVVm', 'Tiền Thưởng', 'Ghi chú'];
+      headers = ['STT', 'Nhóm', 'Mã Số', 'Họ Tên', 'Chức Vụ', conditionType === 'nyd_activity' ? 'Lượt TVVm HĐ' : 'FYP TVVm', ...(hasP2 ? ['Thưởng GĐ1', 'Thưởng GĐ2'] : []), hasP2 ? 'Tổng Thưởng' : 'Tiền Thưởng', 'Ghi chú'];
       const nydBonusCalcFn = conditionType === 'nyd_activity'
         ? (n: NYDData) => calculateActivityRoundBonus(n.recruitCount).tier
         : (n: NYDData) => calculateBonus(n.recruitFYP).tier;
-      rows = [...nydData].map(n => ({ nyd: n, tier: nydBonusCalcFn(n) })).sort((a, b) => (b.tier?.bonusAmount || 0) - (a.tier?.bonusAmount || 0)).map(({ nyd: n, tier }, idx) => [
-        idx + 1, n.nhom, n.agentCode, n.agentName, n.position, conditionType === 'nyd_activity' ? n.recruitCount : n.recruitFYP, tier ? formatBonus(tier, n.recruitFYP, n.recruitCount) : '', tier ? '' : 'Chưa đạt mức'
-      ]);
+      rows = [...nydData].map(n => ({ nyd: n, tier: nydBonusCalcFn(n) })).sort((a, b) => (b.tier?.bonusAmount || 0) - (a.tier?.bonusAmount || 0)).map(({ nyd: n, tier }, idx) => {
+        const base: (string | number)[] = [idx + 1, n.nhom, n.agentCode, n.agentName, n.position, conditionType === 'nyd_activity' ? n.recruitCount : n.recruitFYP];
+        if (hasP2) {
+          const p1Recruited = n.recruitedContracts.filter(c => !isPhase2Contract(c));
+          const p2Recruited = n.recruitedContracts.filter(c => isPhase2Contract(c));
+          let bP1 = 0, bP2 = 0;
+          if (conditionType === 'nyd_activity') {
+            let a1 = 0, a2 = 0; for (const rc of p1Recruited) { if (rc.fyp >= 3_000_000) a1++; } for (const rc of p2Recruited) { if (rc.fyp >= 3_000_000) a2++; }
+            bP1 = getActivityRoundBonusAmount(a1); bP2 = getActivityRoundBonusAmount2(a2);
+          } else {
+            const fyp1 = p1Recruited.reduce((s, c) => s + c.fyp, 0); const fyp2 = p2Recruited.reduce((s, c) => s + c.fyp, 0);
+            bP1 = getBonusAmount(fyp1); bP2 = getBonusAmount2(fyp2);
+          }
+          base.push(bP1 > 0 ? formatCurrency(bP1) : '', bP2 > 0 ? formatCurrency(bP2) : '', (bP1 + bP2) > 0 ? formatCurrency(bP1 + bP2) : '');
+        } else {
+          base.push(tier ? formatBonus(tier, n.recruitFYP, n.recruitCount) : '');
+        }
+        base.push(tier ? '' : 'Chưa đạt mức');
+        return base;
+      });
     } else if (targetType === 'nhom') {
-      headers = ['STT', 'Nhóm', 'Mã Số', 'Họ tên TN/TB', isActivityRoundMode(conditionType) ? (conditionType === 'activity_round_standard' ? 'LƯỢT HĐ CHUẨN' : 'LƯỢT HĐ') : 'TỔNG IP', 'Tiền Thưởng', 'Ghi chú'];
-      rows = [...groupedDataFiltered].map((g) => { const { tier } = isActivityRoundMode(conditionType) ? calculateActivityRoundBonus(g.activityRounds) : calculateBonus(g.totalFYP); return { g, tier }; }).sort((a, b) => (b.tier?.bonusAmount || 0) - (a.tier?.bonusAmount || 0)).map(({ g, tier }, idx) => [
-        idx + 1, g.nhom, g.leaderCode, g.leaderName || g.nhom, isActivityRoundMode(conditionType) ? g.activityRounds : g.totalFYP, tier ? formatBonus(tier, g.totalFYP, g.activityRounds) : '', tier ? '' : 'Chưa đạt mức'
-      ]);
+      headers = ['STT', 'Nhóm', 'Mã Số', 'Họ tên TN/TB', isActivityRoundMode(conditionType) ? (conditionType === 'activity_round_standard' ? 'LƯỢT HĐ CHUẨN' : 'LƯỢT HĐ') : 'TỔNG IP', ...(hasP2 ? ['Thưởng GĐ1', 'Thưởng GĐ2'] : []), hasP2 ? 'Tổng Thưởng' : 'Tiền Thưởng', 'Ghi chú'];
+      rows = [...groupedDataFiltered].map((g) => { const { tier } = isActivityRoundMode(conditionType) ? calculateActivityRoundBonus(g.activityRounds) : calculateBonus(g.totalFYP); return { g, tier }; }).sort((a, b) => (b.tier?.bonusAmount || 0) - (a.tier?.bonusAmount || 0)).map(({ g, tier }, idx) => {
+        const base: (string | number)[] = [idx + 1, g.nhom, g.leaderCode, g.leaderName || g.nhom, isActivityRoundMode(conditionType) ? g.activityRounds : g.totalFYP];
+        if (hasP2) {
+          const p1FYP = g.contracts.filter(c => !isPhase2Contract(c)).reduce((s, c) => s + c.fyp, 0);
+          const p2FYP = g.contracts.filter(c => isPhase2Contract(c)).reduce((s, c) => s + c.fyp, 0);
+          let bP1 = 0, bP2 = 0;
+          if (isActivityRoundMode(conditionType)) {
+            bP1 = getActivityRoundBonusAmount(g.activityRounds); bP2 = p2FYP > 0 ? getBonusAmount2(p2FYP) : 0;
+          } else { bP1 = getBonusAmount(p1FYP); bP2 = getBonusAmount2(p2FYP); }
+          base.push(bP1 > 0 ? formatCurrency(bP1) : '', bP2 > 0 ? formatCurrency(bP2) : '', (bP1 + bP2) > 0 ? formatCurrency(bP1 + bP2) : '');
+        } else {
+          base.push(tier ? formatBonus(tier, g.totalFYP, g.activityRounds) : '');
+        }
+        base.push(tier ? '' : 'Chưa đạt mức');
+        return base;
+      });
     } else {
       // TVV
       const isPerContract = conditionType === 'per_contract';
-      headers = ['STT', 'Nhóm', 'Mã Số', 'Họ Tên', 'Chức Vụ', ...(isPerContract ? ['Số HĐ'] : []), isPerContract ? 'IP' : conditionType === 'total_fyp' ? 'TỔNG IP' : 'IP', 'Tiền Thưởng', 'Ghi chú'];
+      headers = ['STT', 'Nhóm', 'Mã Số', 'Họ Tên', 'Chức Vụ', ...(isPerContract ? ['Số HĐ'] : []), isPerContract ? 'IP' : conditionType === 'total_fyp' ? 'TỔNG IP' : 'IP', ...(hasP2 ? ['Thưởng GĐ1', 'Thưởng GĐ2'] : []), hasP2 ? 'Tổng Thưởng' : 'Tiền Thưởng', 'Ghi chú'];
       rows = tvvRows.map((row) => {
         const tier = calculateBonus(row.totalFYP).tier;
         return { row, tier };
@@ -804,7 +914,23 @@ export default function Home() {
         const base: (string | number)[] = [idx + 1, row.nhom, row.agentCode, row.agentName, row.position];
         if (isPerContract) base.push(row.contractNumber || '');
         base.push(row.totalFYP);
-        base.push(tier ? formatBonus(tier, row.totalFYP) : '');
+        if (hasP2) {
+          if (isPerContract) {
+            const contract = filteredContracts.find(c => c.id === row.contractId);
+            if (contract && isPhase2Contract(contract)) {
+              base.push('', getBonusAmount2(row.totalFYP) > 0 ? formatCurrency(getBonusAmount2(row.totalFYP)) : '', getBonusAmount2(row.totalFYP) > 0 ? formatCurrency(getBonusAmount2(row.totalFYP)) : '');
+            } else {
+              base.push(getBonusAmount(row.totalFYP) > 0 ? formatCurrency(getBonusAmount(row.totalFYP)) : '', '', getBonusAmount(row.totalFYP) > 0 ? formatCurrency(getBonusAmount(row.totalFYP)) : '');
+            }
+          } else {
+            const aCs = filteredContracts.filter(c => c.agentCode === row.agentCode);
+            const p1FYP = aCs.filter(c => !isPhase2Contract(c)).reduce((s, c) => s + c.fyp, 0);
+            const p2FYP = aCs.filter(c => isPhase2Contract(c)).reduce((s, c) => s + c.fyp, 0);
+            base.push(getBonusAmount(p1FYP) > 0 ? formatCurrency(getBonusAmount(p1FYP)) : '', getBonusAmount2(p2FYP) > 0 ? formatCurrency(getBonusAmount2(p2FYP)) : '', (getBonusAmount(p1FYP) + getBonusAmount2(p2FYP)) > 0 ? formatCurrency(getBonusAmount(p1FYP) + getBonusAmount2(p2FYP)) : '');
+          }
+        } else {
+          base.push(tier ? formatBonus(tier, row.totalFYP) : '');
+        }
         base.push(tier ? '' : 'Chưa đạt mức');
         return base;
       });
@@ -818,24 +944,55 @@ export default function Home() {
     if (filteredContracts.length === 0 && nydData.length === 0 && groupedData.length === 0) { toast({ title: 'Thông báo', description: 'Không có dữ liệu' }); return; }
     let headers: string[];
     let rows: (string | number)[][];
+    const hasP2 = usePhase2 && bonusTiers2.length > 0;
 
     if (targetType === 'nyd') {
-      headers = ['STT', 'Nhóm', 'Mã Số', 'Họ Tên', 'Chức Vụ', conditionType === 'nyd_activity' ? 'Lượt TVVm HĐ' : 'FYP TVVm', 'Tiền Thưởng', 'Ghi chú'];
+      headers = ['STT', 'Nhóm', 'Mã Số', 'Họ Tên', 'Chức Vụ', conditionType === 'nyd_activity' ? 'Lượt TVVm HĐ' : 'FYP TVVm', ...(hasP2 ? ['Thưởng GĐ1', 'Thưởng GĐ2'] : []), hasP2 ? 'Tổng Thưởng' : 'Tiền Thưởng', 'Ghi chú'];
       const nydBonusCalcFn = conditionType === 'nyd_activity'
         ? (n: NYDData) => calculateActivityRoundBonus(n.recruitCount).tier
         : (n: NYDData) => calculateBonus(n.recruitFYP).tier;
-      rows = [...nydData].map(n => ({ nyd: n, tier: nydBonusCalcFn(n) })).sort((a, b) => (b.tier?.bonusAmount || 0) - (a.tier?.bonusAmount || 0)).map(({ nyd: n, tier }, idx) => [
-        idx + 1, n.nhom, n.agentCode, n.agentName, n.position, conditionType === 'nyd_activity' ? n.recruitCount : n.recruitFYP, tier ? formatBonus(tier, n.recruitFYP, n.recruitCount) : '', tier ? '' : 'Chưa đạt mức'
-      ]);
+      rows = [...nydData].map(n => ({ nyd: n, tier: nydBonusCalcFn(n) })).sort((a, b) => (b.tier?.bonusAmount || 0) - (a.tier?.bonusAmount || 0)).map(({ nyd: n, tier }, idx) => {
+        const base: (string | number)[] = [idx + 1, n.nhom, n.agentCode, n.agentName, n.position, conditionType === 'nyd_activity' ? n.recruitCount : n.recruitFYP];
+        if (hasP2) {
+          const p1Recruited = n.recruitedContracts.filter(c => !isPhase2Contract(c));
+          const p2Recruited = n.recruitedContracts.filter(c => isPhase2Contract(c));
+          let bP1 = 0, bP2 = 0;
+          if (conditionType === 'nyd_activity') {
+            let a1 = 0, a2 = 0; for (const rc of p1Recruited) { if (rc.fyp >= 3_000_000) a1++; } for (const rc of p2Recruited) { if (rc.fyp >= 3_000_000) a2++; }
+            bP1 = getActivityRoundBonusAmount(a1); bP2 = getActivityRoundBonusAmount2(a2);
+          } else {
+            const fyp1 = p1Recruited.reduce((s, c) => s + c.fyp, 0); const fyp2 = p2Recruited.reduce((s, c) => s + c.fyp, 0);
+            bP1 = getBonusAmount(fyp1); bP2 = getBonusAmount2(fyp2);
+          }
+          base.push(bP1 > 0 ? formatCurrency(bP1) : '', bP2 > 0 ? formatCurrency(bP2) : '', (bP1 + bP2) > 0 ? formatCurrency(bP1 + bP2) : '');
+        } else {
+          base.push(tier ? formatBonus(tier, n.recruitFYP, n.recruitCount) : '');
+        }
+        base.push(tier ? '' : 'Chưa đạt mức');
+        return base;
+      });
     } else if (targetType === 'nhom') {
-      headers = ['STT', 'Nhóm', 'Mã Số', 'Họ tên TN/TB', isActivityRoundMode(conditionType) ? (conditionType === 'activity_round_standard' ? 'LƯỢT HĐ CHUẨN' : 'LƯỢT HĐ') : 'TỔNG IP', 'Tiền Thưởng', 'Ghi chú'];
-      rows = [...groupedDataFiltered].map((g) => { const { tier } = isActivityRoundMode(conditionType) ? calculateActivityRoundBonus(g.activityRounds) : calculateBonus(g.totalFYP); return { g, tier }; }).sort((a, b) => (b.tier?.bonusAmount || 0) - (a.tier?.bonusAmount || 0)).map(({ g, tier }, idx) => [
-        idx + 1, g.nhom, g.leaderCode, g.leaderName || g.nhom, isActivityRoundMode(conditionType) ? g.activityRounds : g.totalFYP, tier ? formatBonus(tier, g.totalFYP, g.activityRounds) : '', tier ? '' : 'Chưa đạt mức'
-      ]);
+      headers = ['STT', 'Nhóm', 'Mã Số', 'Họ tên TN/TB', isActivityRoundMode(conditionType) ? (conditionType === 'activity_round_standard' ? 'LƯỢT HĐ CHUẨN' : 'LƯỢT HĐ') : 'TỔNG IP', ...(hasP2 ? ['Thưởng GĐ1', 'Thưởng GĐ2'] : []), hasP2 ? 'Tổng Thưởng' : 'Tiền Thưởng', 'Ghi chú'];
+      rows = [...groupedDataFiltered].map((g) => { const { tier } = isActivityRoundMode(conditionType) ? calculateActivityRoundBonus(g.activityRounds) : calculateBonus(g.totalFYP); return { g, tier }; }).sort((a, b) => (b.tier?.bonusAmount || 0) - (a.tier?.bonusAmount || 0)).map(({ g, tier }, idx) => {
+        const base: (string | number)[] = [idx + 1, g.nhom, g.leaderCode, g.leaderName || g.nhom, isActivityRoundMode(conditionType) ? g.activityRounds : g.totalFYP];
+        if (hasP2) {
+          const p1FYP = g.contracts.filter(c => !isPhase2Contract(c)).reduce((s, c) => s + c.fyp, 0);
+          const p2FYP = g.contracts.filter(c => isPhase2Contract(c)).reduce((s, c) => s + c.fyp, 0);
+          let bP1 = 0, bP2 = 0;
+          if (isActivityRoundMode(conditionType)) {
+            bP1 = getActivityRoundBonusAmount(g.activityRounds); bP2 = p2FYP > 0 ? getBonusAmount2(p2FYP) : 0;
+          } else { bP1 = getBonusAmount(p1FYP); bP2 = getBonusAmount2(p2FYP); }
+          base.push(bP1 > 0 ? formatCurrency(bP1) : '', bP2 > 0 ? formatCurrency(bP2) : '', (bP1 + bP2) > 0 ? formatCurrency(bP1 + bP2) : '');
+        } else {
+          base.push(tier ? formatBonus(tier, g.totalFYP, g.activityRounds) : '');
+        }
+        base.push(tier ? '' : 'Chưa đạt mức');
+        return base;
+      });
     } else {
       // TVV
       const isPerContract = conditionType === 'per_contract';
-      headers = ['STT', 'Nhóm', 'Mã Số', 'Họ Tên', 'Chức Vụ', ...(isPerContract ? ['Số HĐ'] : []), isPerContract ? 'IP' : conditionType === 'total_fyp' ? 'TỔNG IP' : 'IP', 'Tiền Thưởng', 'Ghi chú'];
+      headers = ['STT', 'Nhóm', 'Mã Số', 'Họ Tên', 'Chức Vụ', ...(isPerContract ? ['Số HĐ'] : []), isPerContract ? 'IP' : conditionType === 'total_fyp' ? 'TỔNG IP' : 'IP', ...(hasP2 ? ['Thưởng GĐ1', 'Thưởng GĐ2'] : []), hasP2 ? 'Tổng Thưởng' : 'Tiền Thưởng', 'Ghi chú'];
       rows = tvvRows.map((row) => {
         const tier = calculateBonus(row.totalFYP).tier;
         return { row, tier };
@@ -843,7 +1000,23 @@ export default function Home() {
         const base: (string | number)[] = [idx + 1, row.nhom, row.agentCode, row.agentName, row.position];
         if (isPerContract) base.push(row.contractNumber || '');
         base.push(row.totalFYP);
-        base.push(tier ? formatBonus(tier, row.totalFYP) : '');
+        if (hasP2) {
+          if (isPerContract) {
+            const contract = filteredContracts.find(c => c.id === row.contractId);
+            if (contract && isPhase2Contract(contract)) {
+              base.push('', getBonusAmount2(row.totalFYP) > 0 ? formatCurrency(getBonusAmount2(row.totalFYP)) : '', getBonusAmount2(row.totalFYP) > 0 ? formatCurrency(getBonusAmount2(row.totalFYP)) : '');
+            } else {
+              base.push(getBonusAmount(row.totalFYP) > 0 ? formatCurrency(getBonusAmount(row.totalFYP)) : '', '', getBonusAmount(row.totalFYP) > 0 ? formatCurrency(getBonusAmount(row.totalFYP)) : '');
+            }
+          } else {
+            const aCs = filteredContracts.filter(c => c.agentCode === row.agentCode);
+            const p1FYP = aCs.filter(c => !isPhase2Contract(c)).reduce((s, c) => s + c.fyp, 0);
+            const p2FYP = aCs.filter(c => isPhase2Contract(c)).reduce((s, c) => s + c.fyp, 0);
+            base.push(getBonusAmount(p1FYP) > 0 ? formatCurrency(getBonusAmount(p1FYP)) : '', getBonusAmount2(p2FYP) > 0 ? formatCurrency(getBonusAmount2(p2FYP)) : '', (getBonusAmount(p1FYP) + getBonusAmount2(p2FYP)) > 0 ? formatCurrency(getBonusAmount(p1FYP) + getBonusAmount2(p2FYP)) : '');
+          }
+        } else {
+          base.push(tier ? formatBonus(tier, row.totalFYP) : '');
+        }
         base.push(tier ? '' : 'Chưa đạt mức');
         return base;
       });
@@ -996,6 +1169,110 @@ export default function Home() {
   const displayTotalFYP = targetType === 'nyd' ? nydTotalFYP : targetType === 'nhom' ? nhomTotalFYP : totalFYP;
   const { totalFYP: totalFYPValue, tier: matchedTotalTier, remaining: totalRemaining } = getTotalFYPBonus();
   const sortedTiers = [...bonusTiers].sort((a, b) => a.minFYP - b.minFYP);
+  const sortedTiers2 = [...bonusTiers2].sort((a, b) => a.minFYP - b.minFYP);
+
+  // ─── Phase 2 Helpers ──────────────────────────────────────────────────────
+
+  const isPhase2Contract = useCallback((c: Contract): boolean => {
+    if (!usePhase2 || !phase2StartDate) return false;
+    const p2Start = new Date(phase2StartDate);
+    p2Start.setHours(0, 0, 0, 0);
+    return new Date(c.effectiveDate) >= p2Start;
+  }, [usePhase2, phase2StartDate]);
+
+  const phase1Contracts = usePhase2 && phase2StartDate ? filteredContracts.filter(c => !isPhase2Contract(c)) : filteredContracts;
+  const phase2Contracts = usePhase2 && phase2StartDate ? filteredContracts.filter(c => isPhase2Contract(c)) : [];
+
+  // Phase 2 date range strings for display
+  const phase1DateRange = usePhase2 && startDate && phase2StartDate ? `${formatShortDate(startDate)}–${formatShortDate(phase2StartDate)}` : '';
+  const phase2DateRange = usePhase2 && phase2StartDate ? `${formatShortDate(phase2StartDate)}–${phase2EndDate ? formatShortDate(phase2EndDate) : (endDate ? formatShortDate(endDate) : '...')}` : '';
+
+  // Phase 2 total bonus for poster
+  const tvvTotalBonus2 = usePhase2 && bonusTiers2.length > 0 ? (() => {
+    if (targetType !== 'tvv') return 0;
+    if (conditionType === 'per_contract') {
+      return phase2Contracts.reduce((s, c) => s + getBonusAmount2(c.fyp), 0);
+    }
+    // total_fyp mode for TVV
+    const totalP2FYP = phase2Contracts.reduce((s, c) => s + c.fyp, 0);
+    return getBonusAmount2(totalP2FYP);
+  })() : 0;
+
+  const nhomTotalBonus2 = usePhase2 && bonusTiers2.length > 0 ? (() => {
+    if (targetType !== 'nhom') return 0;
+    // Build Phase 2 group data
+    const p2Map = new Map<string, { totalFYP: number; contracts: Contract[] }>();
+    for (const c of phase2Contracts) {
+      const key = c.nhom;
+      if (!p2Map.has(key)) p2Map.set(key, { totalFYP: 0, contracts: [] });
+      const g = p2Map.get(key)!;
+      g.totalFYP += c.fyp;
+      g.contracts.push(c);
+    }
+    let total = 0;
+    for (const [, g] of p2Map) {
+      if (isActivityRoundMode(conditionType)) {
+        // Count rounds for Phase 2
+        const ipThreshold = conditionType === 'activity_round_standard' ? 12_000_000 : 3_000_000;
+        const agentTinhLuotMap = new Map<string, { maxTinhLuot: number; startDate: string | null }>();
+        for (const c of g.contracts) {
+          const existing = agentTinhLuotMap.get(c.agentCode);
+          if (existing) existing.maxTinhLuot = Math.max(existing.maxTinhLuot, c.tinhLuot);
+          else agentTinhLuotMap.set(c.agentCode, { maxTinhLuot: c.tinhLuot, startDate: c.startDate });
+        }
+        let rounds2 = 0;
+        for (const [, data] of agentTinhLuotMap) {
+          if (useTVVm && data.startDate) {
+            const start = new Date(data.startDate);
+            const monthsDiff = (new Date().getFullYear() - start.getFullYear()) * 12 + (new Date().getMonth() - start.getMonth());
+            if (monthsDiff > 12) continue;
+          }
+          if (data.maxTinhLuot >= ipThreshold) rounds2++;
+        }
+        total += getActivityRoundBonusAmount2(rounds2, g.totalFYP);
+      } else {
+        total += getBonusAmount2(g.totalFYP);
+      }
+    }
+    return total;
+  })() : 0;
+
+  const nydTotalBonus2 = usePhase2 && bonusTiers2.length > 0 ? (() => {
+    if (targetType !== 'nyd') return 0;
+    // Build Phase 2 NYD data (simplified)
+    const nydCandidates = new Map<string, { name: string; code: string; nhom: string; position: string }>();
+    for (const c of contracts) {
+      const pos = (c.position || '').toLowerCase();
+      if (pos.includes('trưởng ban') || pos.includes('trưởng nhóm') || pos.includes('tiền trưởng nhóm')) {
+        if (!nydCandidates.has(c.agentCode)) nydCandidates.set(c.agentCode, { name: c.agentName, code: c.agentCode, nhom: c.nhom, position: c.position });
+      }
+    }
+    let total = 0;
+    const ipThreshold = 3_000_000;
+    for (const [nydCode] of nydCandidates) {
+      const recruitedP2 = phase2Contracts.filter(c => c.recruiterCode === nydCode && isTVVm(c));
+      const agentIPMap = new Map<string, number>();
+      for (const rc of recruitedP2) {
+        agentIPMap.set(rc.agentCode, (agentIPMap.get(rc.agentCode) || 0) + rc.fyp);
+      }
+      let recruitCount2 = 0;
+      let recruitFYP2 = 0;
+      for (const [, ip] of agentIPMap) { recruitCount2++; recruitFYP2 += ip; }
+      if (conditionType === 'nyd_activity') {
+        let activeCount = 0;
+        for (const [, ip] of agentIPMap) { if (ip >= ipThreshold) activeCount++; }
+        total += getActivityRoundBonusAmount2(activeCount, recruitFYP2);
+      } else {
+        total += getBonusAmount2(recruitFYP2);
+      }
+    }
+    return total;
+  })() : 0;
+
+  const totalBonusDisplay2 = usePhase2 && bonusTiers2.length > 0
+    ? (targetType === 'nyd' ? nydTotalBonus2 : targetType === 'nhom' ? nhomTotalBonus2 : tvvTotalBonus2)
+    : 0;
+  const totalBonusWithP2 = totalBonusDisplay + totalBonusDisplay2;
 
   const hasResults = filteredContracts.length > 0 || nydData.length > 0 || groupedData.length > 0;
 
@@ -1085,6 +1362,29 @@ export default function Home() {
               <div className="space-y-1"><Label className="text-xs">Hiệu lực đến</Label><Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="h-8 text-xs border-emerald-200" /></div>
               <div className="space-y-1"><Label className="text-xs">Ngày phát hành</Label><Input type="date" value={issueDate} onChange={(e) => setIssueDate(e.target.value)} className="h-8 text-xs border-emerald-200" /></div>
             </div>
+            {/* Phase 2 toggle */}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setUsePhase2(!usePhase2)}
+                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all ${usePhase2 ? 'bg-blue-100 border-blue-300 text-blue-700' : 'bg-gray-50 border-gray-200 text-gray-500 hover:bg-gray-100'}`}
+              >
+                <Layers className="w-3 h-3" />
+                Giai đoạn 2
+              </button>
+              {usePhase2 && startDate && endDate && (
+                <span className="text-[10px] text-gray-400">GĐ1: {formatShortDate(startDate)}–{phase2StartDate ? formatShortDate(phase2StartDate) : '...'} · GĐ2: {phase2StartDate ? formatShortDate(phase2StartDate) : '...'}–{phase2EndDate ? formatShortDate(phase2EndDate) : formatShortDate(endDate)}</span>
+              )}
+            </div>
+            {usePhase2 && (
+              <div className="rounded-lg border border-blue-200 bg-blue-50/50 p-2.5 space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1"><Label className="text-[10px] text-blue-700">GĐ2 bắt đầu</Label><Input type="date" value={phase2StartDate} onChange={(e) => setPhase2StartDate(e.target.value)} className="h-7 text-xs border-blue-200" /></div>
+                  <div className="space-y-1"><Label className="text-[10px] text-blue-700">GĐ2 kết thúc</Label><Input type="date" value={phase2EndDate} onChange={(e) => setPhase2EndDate(e.target.value)} className="h-7 text-xs border-blue-200" /></div>
+                </div>
+                <p className="text-[10px] text-blue-600">HĐ hiệu lực trong GĐ2 sẽ tính thưởng theo tỷ lệ GĐ2</p>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -1234,6 +1534,30 @@ export default function Home() {
               </div>
             )}
 
+            {/* Secondary conditions toggle */}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setUseSecondaryCondition(!useSecondaryCondition)}
+                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all ${useSecondaryCondition ? 'bg-teal-100 border-teal-300 text-teal-700' : 'bg-gray-50 border-gray-200 text-gray-500 hover:bg-gray-100'}`}
+              >
+                <Shield className="w-3 h-3" />
+                Điều kiện phụ
+              </button>
+              {useSecondaryCondition && (secondaryAFYPMin > 0 || secondaryIPMin > 0) && (
+                <span className="text-[10px] text-teal-600">AFYP ≥ {formatNumber(secondaryAFYPMin)}{secondaryIPMin > 0 ? `, IP ≥ ${formatNumber(secondaryIPMin)}` : ''}</span>
+              )}
+            </div>
+            {useSecondaryCondition && (
+              <div className="rounded-lg border border-teal-200 bg-teal-50/50 p-2.5 space-y-2">
+                <p className="text-[10px] text-teal-700 font-medium">Chỉ tính HĐ thỏa mãn điều kiện phụ:</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="space-y-1"><Label className="text-[10px] text-teal-700">AFYP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(secondaryAFYPMin) || ''} onChange={(e) => setSecondaryAFYPMin(nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-teal-200" /></div>
+                  <div className="space-y-1"><Label className="text-[10px] text-teal-700">IP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(secondaryIPMin) || ''} onChange={(e) => setSecondaryIPMin(nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-teal-200" /></div>
+                </div>
+              </div>
+            )}
+
             <Separator />
 
             {/* Bonus Tiers */}
@@ -1277,6 +1601,56 @@ export default function Home() {
                 ))}
               </div>
             </div>
+
+            {/* Phase 2 Bonus Tiers */}
+            {usePhase2 && (
+              <>
+                <Separator />
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-xs font-medium text-blue-700">Bảng mức thưởng - Giai đoạn 2</Label>
+                    <Button variant="ghost" size="sm" onClick={addBonusTier2} className="text-blue-600 hover:text-blue-700 h-6 text-xs"><Plus className="w-3 h-3 mr-0.5" /> Thêm mức GĐ2</Button>
+                  </div>
+                  {bonusTiers2.length === 0 && (
+                    <p className="text-[10px] text-blue-500 italic">Chưa có mức thưởng GĐ2. Nhấn &quot;Thêm mức GĐ2&quot; để tạo.</p>
+                  )}
+                  <div className="space-y-2">
+                    {bonusTiers2.map((tier, index) => (
+                      <div key={tier.id} className="p-2 rounded-lg bg-blue-50/50 border border-blue-100">
+                        <div className="flex items-center gap-1.5 mb-1.5">
+                          <span className="text-[10px] font-bold text-blue-700 bg-blue-100 px-1.5 py-0.5 rounded">Mức GĐ2 {index + 1}</span>
+                          <div className="flex items-center gap-0.5 ml-auto">
+                            {([['money', 'Tiền', Banknote, 'bg-blue-600'], ['money_per_round', 'Tiền×Lượt', Zap, 'bg-orange-600'], ['gift', 'Quà', Gift, 'bg-pink-600'], ['percent', '% IP', Percent, 'bg-violet-600']] as const).map(([type, label, Icon, activeCls]) => (
+                              <Button key={type} variant={tier.bonusType === type ? 'default' : 'outline'} size="sm" className={`h-5 px-1.5 text-[9px] ${tier.bonusType === type ? activeCls + ' hover:opacity-90' : ''}`} onClick={() => updateBonusTier2(tier.id, 'bonusType', type)}><Icon className="w-2.5 h-2.5 mr-0.5" />{label}</Button>
+                            ))}
+                          </div>
+                          <Button variant="ghost" size="sm" onClick={() => removeBonusTier2(tier.id)} className="h-5 w-5 p-0 text-red-400 hover:text-red-600"><Trash2 className="w-2.5 h-2.5" /></Button>
+                        </div>
+                        <div className="grid grid-cols-3 gap-1.5">
+                          {isActivityRoundMode(conditionType) || conditionType === 'nyd_activity' ? (
+                            <>
+                              <div><Label className="text-[9px] text-muted-foreground">Lượt từ</Label><Input type="number" placeholder="0" value={tier.minFYP || ''} onChange={(e) => updateBonusTier2(tier.id, 'minFYP', parseInt(e.target.value) || 0)} className="h-7 text-xs border-blue-200" /></div>
+                              <div><Label className="text-[9px] text-muted-foreground">Lượt đến</Label><Input type="number" placeholder="∞" value={tier.maxFYP || ''} onChange={(e) => updateBonusTier2(tier.id, 'maxFYP', e.target.value ? parseInt(e.target.value) : null)} className="h-7 text-xs border-blue-200" /></div>
+                            </>
+                          ) : (
+                            <>
+                              <div><Label className="text-[9px] text-muted-foreground">IP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(tier.minFYP) || ''} onChange={(e) => updateBonusTier2(tier.id, 'minFYP', nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-blue-200" /></div>
+                              <div><Label className="text-[9px] text-muted-foreground">IP đến (ngàn)</Label><Input type="number" placeholder="∞" value={tier.maxFYP ? vndToNgan(tier.maxFYP) : ''} onChange={(e) => updateBonusTier2(tier.id, 'maxFYP', e.target.value ? nganToVnd(parseFloat(e.target.value)) : null)} className="h-7 text-xs border-blue-200" /></div>
+                            </>
+                          )}
+                          <div>
+                            <Label className="text-[9px] text-muted-foreground">{tier.bonusType === 'money' ? 'Thưởng (ngàn)' : tier.bonusType === 'money_per_round' ? 'Tiền/lượt (ngàn)' : tier.bonusType === 'percent' ? '% IP' : 'Quà tặng'}</Label>
+                            {tier.bonusType === 'money' || tier.bonusType === 'money_per_round' ? <Input type="number" placeholder="0" value={vndToNgan(tier.bonusAmount) || ''} onChange={(e) => updateBonusTier2(tier.id, 'bonusAmount', nganToVnd(parseFloat(e.target.value) || 0))} className={`h-7 text-xs ${tier.bonusType === 'money_per_round' ? 'border-orange-200' : 'border-blue-200'}`} />
+                            : tier.bonusType === 'percent' ? <Input type="number" placeholder="7" value={tier.bonusPercent || ''} onChange={(e) => updateBonusTier2(tier.id, 'bonusPercent', parseFloat(e.target.value) || 0)} className="h-7 text-xs border-violet-200" />
+                            : <Input type="text" placeholder="VD: iPhone 15" value={tier.bonusText} onChange={(e) => updateBonusTier2(tier.id, 'bonusText', e.target.value)} className="h-7 text-xs border-pink-200" />}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
 
             <Separator />
 
@@ -1351,7 +1725,7 @@ export default function Home() {
 
         {/* Preview Poster - hidden when results are shown, shown as compact when no results */}
         {!hasResults && (
-          <ContestPoster contestTitle={contestTitle} startDate={startDate} endDate={endDate} conditionType={conditionType} targetType={targetType} sortedTiers={sortedTiers} filteredContracts={filteredContracts} groupedData={groupedData} nydData={nydData} totalFYP={displayTotalFYP} totalBonus={totalBonusDisplay} achievedCount={achievedCount} notAchievedCount={notAchievedCount} formatCurrency={formatCurrency} formatNumber={formatNumber} formatDate={formatDate} isPreview />
+          <ContestPoster contestTitle={contestTitle} startDate={startDate} endDate={endDate} conditionType={conditionType} targetType={targetType} sortedTiers={sortedTiers} sortedTiers2={sortedTiers2} filteredContracts={filteredContracts} groupedData={groupedData} nydData={nydData} totalFYP={displayTotalFYP} totalBonus={totalBonusWithP2} achievedCount={achievedCount} notAchievedCount={notAchievedCount} formatCurrency={formatCurrency} formatNumber={formatNumber} formatDate={formatDate} isPreview usePhase2={usePhase2} phase1DateRange={phase1DateRange} phase2DateRange={phase2DateRange} useSecondaryCondition={useSecondaryCondition} secondaryAFYPMin={secondaryAFYPMin} secondaryIPMin={secondaryIPMin} totalBonus2={totalBonusDisplay2} />
         )}
 
         {/* Results */}
@@ -1375,7 +1749,7 @@ export default function Home() {
                       <img src={posterUrl} alt="Poster" className="w-full max-h-[400px] object-contain" />
                     </div>
                   ) : (
-                    <ContestPoster contestTitle={contestTitle} startDate={startDate} endDate={endDate} conditionType={conditionType} targetType={targetType} sortedTiers={sortedTiers} filteredContracts={filteredContracts} groupedData={groupedData} nydData={nydData} totalFYP={displayTotalFYP} totalBonus={totalBonusDisplay} achievedCount={achievedCount} notAchievedCount={notAchievedCount} formatCurrency={formatCurrency} formatNumber={formatNumber} formatDate={formatDate} />
+                    <ContestPoster contestTitle={contestTitle} startDate={startDate} endDate={endDate} conditionType={conditionType} targetType={targetType} sortedTiers={sortedTiers} sortedTiers2={sortedTiers2} filteredContracts={filteredContracts} groupedData={groupedData} nydData={nydData} totalFYP={displayTotalFYP} totalBonus={totalBonusWithP2} achievedCount={achievedCount} notAchievedCount={notAchievedCount} formatCurrency={formatCurrency} formatNumber={formatNumber} formatDate={formatDate} usePhase2={usePhase2} phase1DateRange={phase1DateRange} phase2DateRange={phase2DateRange} useSecondaryCondition={useSecondaryCondition} secondaryAFYPMin={secondaryAFYPMin} secondaryIPMin={secondaryIPMin} totalBonus2={totalBonusDisplay2} />
                   )}
 
                   {isActivityRoundMode(conditionType) && targetType === 'nhom' && groupedData.length > 0 && (
@@ -1446,9 +1820,25 @@ export default function Home() {
                             <th className="text-[12px] font-bold text-white text-center py-2.5 px-3 whitespace-nowrap uppercase border-b-2 border-emerald-400 shadow-sm">
                               <span>{getMetricHeaderLabel()}</span>
                             </th>
-                            <th className="text-[12px] font-bold text-white text-center py-2.5 px-3 whitespace-nowrap uppercase border-b-2 border-emerald-400 shadow-sm">
-                              <span>Thưởng</span>
-                            </th>
+                            {usePhase2 && bonusTiers2.length > 0 ? (
+                              <>
+                                <th className="text-[12px] font-bold text-white text-center py-2.5 px-2 whitespace-nowrap uppercase border-b-2 border-amber-400 shadow-sm bg-amber-600/30">
+                                  <span>Thưởng GĐ1</span>
+                                  {phase1DateRange && <span className="block text-[9px] font-normal text-amber-200">{phase1DateRange}</span>}
+                                </th>
+                                <th className="text-[12px] font-bold text-white text-center py-2.5 px-2 whitespace-nowrap uppercase border-b-2 border-blue-400 shadow-sm bg-blue-600/30">
+                                  <span>Thưởng GĐ2</span>
+                                  {phase2DateRange && <span className="block text-[9px] font-normal text-blue-200">{phase2DateRange}</span>}
+                                </th>
+                                <th className="text-[12px] font-bold text-white text-center py-2.5 px-3 whitespace-nowrap uppercase border-b-2 border-emerald-400 shadow-sm bg-emerald-600/20">
+                                  <span>Tổng Thưởng</span>
+                                </th>
+                              </>
+                            ) : (
+                              <th className="text-[12px] font-bold text-white text-center py-2.5 px-3 whitespace-nowrap uppercase border-b-2 border-emerald-400 shadow-sm">
+                                <span>Thưởng</span>
+                              </th>
+                            )}
                             <th className="text-[12px] font-bold text-white text-center py-2.5 px-3 whitespace-nowrap uppercase border-b-2 border-emerald-400 shadow-sm">Ghi chú</th>
                           </tr>
                         </thead>
@@ -1457,8 +1847,48 @@ export default function Home() {
                           {targetType === 'nhom' && [...groupedDataFiltered].map((g) => {
                             const { tier } = isActivityRoundMode(conditionType) ? calculateActivityRoundBonus(g.activityRounds) : calculateBonus(g.totalFYP);
                             const metric = isActivityRoundMode(conditionType) ? g.activityRounds : g.totalFYP;
-                            return { group: g, tier, metric };
-                          }).sort((a, b) => b.metric - a.metric).filter(({ tier }) => !hideNotAchieved || tier !== null).map(({ group, tier, metric }, idx) => (
+                            // Phase 2 calculations for nhóm
+                            let bonusP1 = tier ? (tier.bonusType === 'percent' ? tier.bonusPercent / 100 * g.totalFYP : tier.bonusType === 'money_per_round' ? tier.bonusAmount * g.activityRounds : tier.bonusAmount) : 0;
+                            let bonusP2 = 0;
+                            let tierP1: BonusTier | null = tier;
+                            let tierP2: BonusTier | null = null;
+                            if (usePhase2 && bonusTiers2.length > 0) {
+                              // Split group contracts into P1/P2
+                              const p1Contracts = g.contracts.filter(c => !isPhase2Contract(c));
+                              const p2Contracts = g.contracts.filter(c => isPhase2Contract(c));
+                              // Phase 1 metric and bonus
+                              const p1FYP = p1Contracts.reduce((s, c) => s + c.fyp, 0);
+                              if (isActivityRoundMode(conditionType)) {
+                                const ipThreshold = conditionType === 'activity_round_standard' ? 12_000_000 : 3_000_000;
+                                const agentMap1 = new Map<string, { maxTinhLuot: number; startDate: string | null }>();
+                                for (const c of p1Contracts) { const ex = agentMap1.get(c.agentCode); if (ex) ex.maxTinhLuot = Math.max(ex.maxTinhLuot, c.tinhLuot); else agentMap1.set(c.agentCode, { maxTinhLuot: c.tinhLuot, startDate: c.startDate }); }
+                                let rounds1 = 0;
+                                for (const [, d] of agentMap1) { if (useTVVm && d.startDate) { const m = (new Date().getFullYear() - new Date(d.startDate).getFullYear()) * 12 + (new Date().getMonth() - new Date(d.startDate).getMonth()); if (m > 12) continue; } if (d.maxTinhLuot >= ipThreshold) rounds1++; }
+                                const p1Res = calculateActivityRoundBonus(rounds1);
+                                tierP1 = p1Res.tier;
+                                bonusP1 = getActivityRoundBonusAmount(rounds1, p1FYP);
+                                // Phase 2 rounds
+                                const agentMap2 = new Map<string, { maxTinhLuot: number; startDate: string | null }>();
+                                for (const c of p2Contracts) { const ex = agentMap2.get(c.agentCode); if (ex) ex.maxTinhLuot = Math.max(ex.maxTinhLuot, c.tinhLuot); else agentMap2.set(c.agentCode, { maxTinhLuot: c.tinhLuot, startDate: c.startDate }); }
+                                let rounds2 = 0;
+                                for (const [, d] of agentMap2) { if (useTVVm && d.startDate) { const m = (new Date().getFullYear() - new Date(d.startDate).getFullYear()) * 12 + (new Date().getMonth() - new Date(d.startDate).getMonth()); if (m > 12) continue; } if (d.maxTinhLuot >= ipThreshold) rounds2++; }
+                                const p2Res = calculateActivityRoundBonus2(rounds2);
+                                tierP2 = p2Res.tier;
+                                bonusP2 = getActivityRoundBonusAmount2(rounds2, p2Contracts.reduce((s, c) => s + c.fyp, 0));
+                              } else {
+                                const p1Res = calculateBonus(p1FYP);
+                                tierP1 = p1Res.tier;
+                                bonusP1 = p1Res.tier ? (p1Res.tier.bonusType === 'percent' ? p1Res.tier.bonusPercent / 100 * p1FYP : p1Res.tier.bonusAmount) : 0;
+                                // Phase 2
+                                const p2FYP = p2Contracts.reduce((s, c) => s + c.fyp, 0);
+                                const p2Res = calculateBonus2(p2FYP);
+                                tierP2 = p2Res.tier;
+                                bonusP2 = p2Res.tier ? (p2Res.tier.bonusType === 'percent' ? p2Res.tier.bonusPercent / 100 * p2FYP : p2Res.tier.bonusAmount) : 0;
+                              }
+                            }
+                            const totalBonus = bonusP1 + bonusP2;
+                            return { group: g, tier, metric, tierP1, tierP2, bonusP1, bonusP2, totalBonus };
+                          }).sort((a, b) => b.metric - a.metric).filter(({ tier }) => !hideNotAchieved || tier !== null).map(({ group, tier, metric, tierP1, tierP2, bonusP1, bonusP2, totalBonus }, idx) => (
                             <tr key={group.nhom} className={`${idx % 2 === 0 ? 'bg-white' : 'bg-emerald-50/60'} hover:bg-emerald-100/80 border-b border-emerald-200/60 transition-colors`}>
                               <td className="text-[12px] text-center text-black font-medium py-2 px-3 whitespace-nowrap">{idx + 1}</td>
                               <td className="text-[12px] text-left text-black font-semibold py-2 px-3 whitespace-nowrap">{group.nhom}</td>
@@ -1467,9 +1897,25 @@ export default function Home() {
                               <td className="text-[12px] text-center font-bold text-blue-700 py-2 px-3 whitespace-nowrap">
                                 {isActivityRoundMode(conditionType) ? `${group.activityRounds} lượt` : formatNumber(group.totalFYP)}
                               </td>
-                              <td className="text-[14px] text-center font-bold text-amber-700 py-2 px-3 whitespace-nowrap bg-amber-50/60">
-                                {tier ? <span className="inline-flex items-center gap-1"><Banknote className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />{formatBonus(tier, group.totalFYP, group.activityRounds)}</span> : <span className="text-gray-300">—</span>}
-                              </td>
+                              {usePhase2 && bonusTiers2.length > 0 ? (
+                                <>
+                                  <td className="text-[12px] text-center font-bold text-amber-700 py-2 px-2 whitespace-nowrap bg-amber-50/60">
+                                    {tierP1 ? formatBonus(tierP1, group.contracts.filter(c => !isPhase2Contract(c)).reduce((s, c) => s + c.fyp, 0), isActivityRoundMode(conditionType) ? undefined : undefined) : <span className="text-gray-300">—</span>}
+                                    {bonusP1 > 0 && <span className="block text-[10px] text-amber-600">{formatCurrency(bonusP1)}</span>}
+                                  </td>
+                                  <td className="text-[12px] text-center font-bold text-blue-700 py-2 px-2 whitespace-nowrap bg-blue-50/60">
+                                    {tierP2 ? formatBonus(tierP2, group.contracts.filter(c => isPhase2Contract(c)).reduce((s, c) => s + c.fyp, 0)) : <span className="text-gray-300">—</span>}
+                                    {bonusP2 > 0 && <span className="block text-[10px] text-blue-600">{formatCurrency(bonusP2)}</span>}
+                                  </td>
+                                  <td className="text-[14px] text-center font-bold text-emerald-700 py-2 px-3 whitespace-nowrap bg-emerald-50/40">
+                                    {totalBonus > 0 ? <span className="inline-flex items-center gap-1"><Banknote className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />{formatCurrency(totalBonus)}</span> : <span className="text-gray-300">—</span>}
+                                  </td>
+                                </>
+                              ) : (
+                                <td className="text-[14px] text-center font-bold text-amber-700 py-2 px-3 whitespace-nowrap bg-amber-50/60">
+                                  {tier ? <span className="inline-flex items-center gap-1"><Banknote className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />{formatBonus(tier, group.totalFYP, group.activityRounds)}</span> : <span className="text-gray-300">—</span>}
+                                </td>
+                              )}
                               <td className="text-[12px] text-center py-2 px-3 whitespace-nowrap">{tier ? <span className="text-emerald-600 font-medium">✓</span> : <span className="text-gray-400 italic text-[10px]">{getMissingLabel(metric, isActivityRoundMode(conditionType))}</span>}</td>
                             </tr>
                           ))}
@@ -1478,8 +1924,46 @@ export default function Home() {
                           {targetType === 'nyd' && [...nydData].map(n => {
                             const tier = nydBonusCalc(n);
                             const metricValue = conditionType === 'nyd_activity' ? n.recruitCount : n.recruitFYP;
-                            return { nyd: n, tier, metricValue };
-                          }).sort((a, b) => b.metricValue - a.metricValue).filter(({ tier }) => !hideNotAchieved || tier !== null).map(({ nyd: n, tier, metricValue }, idx) => (
+                            // Phase 2 calculations for NYD
+                            let bonusP1 = 0;
+                            let bonusP2 = 0;
+                            let tierP1: BonusTier | null = null;
+                            let tierP2: BonusTier | null = null;
+                            if (usePhase2 && bonusTiers2.length > 0) {
+                              // Split recruited contracts into P1/P2
+                              const p1Recruited = n.recruitedContracts.filter(c => !isPhase2Contract(c));
+                              const p2Recruited = n.recruitedContracts.filter(c => isPhase2Contract(c));
+                              // Phase 1
+                              const agentIPMap1 = new Map<string, number>();
+                              for (const rc of p1Recruited) agentIPMap1.set(rc.agentCode, (agentIPMap1.get(rc.agentCode) || 0) + rc.fyp);
+                              let recruitCount1 = 0, recruitFYP1 = 0, activeCount1 = 0;
+                              for (const [, ip] of agentIPMap1) { recruitCount1++; recruitFYP1 += ip; if (ip >= 3_000_000) activeCount1++; }
+                              if (conditionType === 'nyd_activity') {
+                                const p1Res = calculateActivityRoundBonus(activeCount1);
+                                tierP1 = p1Res.tier; bonusP1 = getActivityRoundBonusAmount(activeCount1, recruitFYP1);
+                              } else {
+                                const p1Res = calculateBonus(recruitFYP1);
+                                tierP1 = p1Res.tier; bonusP1 = p1Res.tier ? (p1Res.tier.bonusType === 'percent' ? p1Res.tier.bonusPercent / 100 * recruitFYP1 : p1Res.tier.bonusAmount) : 0;
+                              }
+                              // Phase 2
+                              const agentIPMap2 = new Map<string, number>();
+                              for (const rc of p2Recruited) agentIPMap2.set(rc.agentCode, (agentIPMap2.get(rc.agentCode) || 0) + rc.fyp);
+                              let recruitCount2 = 0, recruitFYP2 = 0, activeCount2 = 0;
+                              for (const [, ip] of agentIPMap2) { recruitCount2++; recruitFYP2 += ip; if (ip >= 3_000_000) activeCount2++; }
+                              if (conditionType === 'nyd_activity') {
+                                const p2Res = calculateActivityRoundBonus2(activeCount2);
+                                tierP2 = p2Res.tier; bonusP2 = getActivityRoundBonusAmount2(activeCount2, recruitFYP2);
+                              } else {
+                                const p2Res = calculateBonus2(recruitFYP2);
+                                tierP2 = p2Res.tier; bonusP2 = p2Res.tier ? (p2Res.tier.bonusType === 'percent' ? p2Res.tier.bonusPercent / 100 * recruitFYP2 : p2Res.tier.bonusAmount) : 0;
+                              }
+                            } else {
+                              tierP1 = tier;
+                              bonusP1 = tier ? (tier.bonusType === 'percent' ? tier.bonusPercent / 100 * n.recruitFYP : tier.bonusType === 'money_per_round' ? tier.bonusAmount * n.recruitCount : tier.bonusAmount) : 0;
+                            }
+                            const totalBonus = bonusP1 + bonusP2;
+                            return { nyd: n, tier, metricValue, tierP1, tierP2, bonusP1, bonusP2, totalBonus };
+                          }).sort((a, b) => b.metricValue - a.metricValue).filter(({ tier }) => !hideNotAchieved || tier !== null).map(({ nyd: n, tier, metricValue, tierP1, tierP2, bonusP1, bonusP2, totalBonus }, idx) => (
                             <tr key={n.agentCode} className={`${idx % 2 === 0 ? 'bg-white' : 'bg-emerald-50/60'} hover:bg-emerald-100/80 border-b border-emerald-200/60 transition-colors`}>
                               <td className="text-[12px] text-center text-black font-medium py-2 px-3 whitespace-nowrap">{idx + 1}</td>
                               <td className="text-[12px] text-left text-black font-semibold py-2 px-3 whitespace-nowrap">{n.nhom}</td>
@@ -1489,9 +1973,25 @@ export default function Home() {
                               <td className="text-[12px] text-center font-bold text-blue-700 py-2 px-3 whitespace-nowrap">
                                 {conditionType === 'nyd_activity' ? `${metricValue} lượt` : formatNumber(metricValue)}
                               </td>
-                              <td className="text-[14px] text-center font-bold text-amber-700 py-2 px-3 whitespace-nowrap bg-amber-50/60">
-                                {tier ? <span className="inline-flex items-center gap-1"><Banknote className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />{formatBonus(tier, n.recruitFYP, n.recruitCount)}</span> : <span className="text-gray-300">—</span>}
-                              </td>
+                              {usePhase2 && bonusTiers2.length > 0 ? (
+                                <>
+                                  <td className="text-[12px] text-center font-bold text-amber-700 py-2 px-2 whitespace-nowrap bg-amber-50/60">
+                                    {tierP1 ? formatBonus(tierP1) : <span className="text-gray-300">—</span>}
+                                    {bonusP1 > 0 && <span className="block text-[10px] text-amber-600">{formatCurrency(bonusP1)}</span>}
+                                  </td>
+                                  <td className="text-[12px] text-center font-bold text-blue-700 py-2 px-2 whitespace-nowrap bg-blue-50/60">
+                                    {tierP2 ? formatBonus(tierP2) : <span className="text-gray-300">—</span>}
+                                    {bonusP2 > 0 && <span className="block text-[10px] text-blue-600">{formatCurrency(bonusP2)}</span>}
+                                  </td>
+                                  <td className="text-[14px] text-center font-bold text-emerald-700 py-2 px-3 whitespace-nowrap bg-emerald-50/40">
+                                    {totalBonus > 0 ? <span className="inline-flex items-center gap-1"><Banknote className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />{formatCurrency(totalBonus)}</span> : <span className="text-gray-300">—</span>}
+                                  </td>
+                                </>
+                              ) : (
+                                <td className="text-[14px] text-center font-bold text-amber-700 py-2 px-3 whitespace-nowrap bg-amber-50/60">
+                                  {tier ? <span className="inline-flex items-center gap-1"><Banknote className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />{formatBonus(tier, n.recruitFYP, n.recruitCount)}</span> : <span className="text-gray-300">—</span>}
+                                </td>
+                              )}
                               <td className="text-[12px] text-center py-2 px-3 whitespace-nowrap">{tier ? <span className="text-emerald-600 font-medium">✓</span> : <span className="text-gray-400 italic text-[10px]">{getMissingLabel(metricValue, conditionType === 'nyd_activity')}</span>}</td>
                             </tr>
                           ))}
@@ -1502,8 +2002,46 @@ export default function Home() {
                             const metric = isActivityRoundMode(conditionType)
                               ? (Math.max(row.tinhLuot, 0) >= (conditionType === 'activity_round_standard' ? 12000000 : 3000000) ? 1 : 0)
                               : row.totalFYP;
-                            return { row, tier, metric };
-                          }).sort((a, b) => b.metric - a.metric).filter(({ tier }) => !hideNotAchieved || tier !== null).map(({ row, tier, metric }, idx) => (
+                            // Phase 2 calculations for TVV
+                            let bonusP1 = 0;
+                            let bonusP2 = 0;
+                            let tierP1: BonusTier | null = tier;
+                            let tierP2: BonusTier | null = null;
+                            if (usePhase2 && bonusTiers2.length > 0) {
+                              if (conditionType === 'per_contract') {
+                                // For per_contract: the contract itself is either P1 or P2
+                                // Find the contract
+                                const contract = filteredContracts.find(c => c.id === row.contractId);
+                                if (contract && isPhase2Contract(contract)) {
+                                  tierP1 = null; bonusP1 = 0;
+                                  const p2Res = calculateBonus2(row.totalFYP);
+                                  tierP2 = p2Res.tier;
+                                  bonusP2 = p2Res.tier ? (p2Res.tier.bonusType === 'percent' ? p2Res.tier.bonusPercent / 100 * row.totalFYP : p2Res.tier.bonusAmount) : 0;
+                                } else {
+                                  tierP1 = tier;
+                                  bonusP1 = tier ? (tier.bonusType === 'percent' ? tier.bonusPercent / 100 * row.totalFYP : tier.bonusAmount) : 0;
+                                  tierP2 = null; bonusP2 = 0;
+                                }
+                              } else {
+                                // total_fyp mode: aggregate per agent per phase
+                                const agentContracts = filteredContracts.filter(c => c.agentCode === row.agentCode);
+                                const p1Contracts = agentContracts.filter(c => !isPhase2Contract(c));
+                                const p2Contracts = agentContracts.filter(c => isPhase2Contract(c));
+                                const p1FYP = p1Contracts.reduce((s, c) => s + c.fyp, 0);
+                                const p2FYP = p2Contracts.reduce((s, c) => s + c.fyp, 0);
+                                const p1Res = calculateBonus(p1FYP);
+                                tierP1 = p1Res.tier;
+                                bonusP1 = p1Res.tier ? (p1Res.tier.bonusType === 'percent' ? p1Res.tier.bonusPercent / 100 * p1FYP : p1Res.tier.bonusAmount) : 0;
+                                const p2Res = calculateBonus2(p2FYP);
+                                tierP2 = p2Res.tier;
+                                bonusP2 = p2Res.tier ? (p2Res.tier.bonusType === 'percent' ? p2Res.tier.bonusPercent / 100 * p2FYP : p2Res.tier.bonusAmount) : 0;
+                              }
+                            } else {
+                              bonusP1 = tier ? (tier.bonusType === 'percent' ? tier.bonusPercent / 100 * row.totalFYP : tier.bonusAmount) : 0;
+                            }
+                            const totalBonus = bonusP1 + bonusP2;
+                            return { row, tier, metric, tierP1, tierP2, bonusP1, bonusP2, totalBonus };
+                          }).sort((a, b) => b.metric - a.metric).filter(({ tier }) => !hideNotAchieved || tier !== null).map(({ row, tier, metric, tierP1, tierP2, bonusP1, bonusP2, totalBonus }, idx) => (
                             <tr key={row.contractId || row.agentCode + idx} className={`${idx % 2 === 0 ? 'bg-white' : 'bg-emerald-50/60'} hover:bg-emerald-100/80 border-b border-emerald-200/60 transition-colors`}>
                               <td className="text-[12px] text-center text-black font-medium py-2 px-3 whitespace-nowrap">{idx + 1}</td>
                               <td className="text-[12px] text-left text-black font-semibold py-2 px-3 whitespace-nowrap">{row.nhom}</td>
@@ -1518,9 +2056,25 @@ export default function Home() {
                                   ? `${Math.max(row.tinhLuot, 0) >= (conditionType === 'activity_round_standard' ? 12000000 : 3000000) ? 1 : 0} lượt`
                                   : formatNumber(row.totalFYP)}
                               </td>
-                              <td className="text-[14px] text-center font-bold text-amber-700 py-2 px-3 whitespace-nowrap bg-amber-50/60">
-                                {tier ? <span className="inline-flex items-center gap-1"><Banknote className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />{formatBonus(tier, row.totalFYP)}</span> : <span className="text-gray-300">—</span>}
-                              </td>
+                              {usePhase2 && bonusTiers2.length > 0 ? (
+                                <>
+                                  <td className="text-[12px] text-center font-bold text-amber-700 py-2 px-2 whitespace-nowrap bg-amber-50/60">
+                                    {tierP1 ? formatBonus(tierP1) : <span className="text-gray-300">—</span>}
+                                    {bonusP1 > 0 && <span className="block text-[10px] text-amber-600">{formatCurrency(bonusP1)}</span>}
+                                  </td>
+                                  <td className="text-[12px] text-center font-bold text-blue-700 py-2 px-2 whitespace-nowrap bg-blue-50/60">
+                                    {tierP2 ? formatBonus(tierP2) : <span className="text-gray-300">—</span>}
+                                    {bonusP2 > 0 && <span className="block text-[10px] text-blue-600">{formatCurrency(bonusP2)}</span>}
+                                  </td>
+                                  <td className="text-[14px] text-center font-bold text-emerald-700 py-2 px-3 whitespace-nowrap bg-emerald-50/40">
+                                    {totalBonus > 0 ? <span className="inline-flex items-center gap-1"><Banknote className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />{formatCurrency(totalBonus)}</span> : <span className="text-gray-300">—</span>}
+                                  </td>
+                                </>
+                              ) : (
+                                <td className="text-[14px] text-center font-bold text-amber-700 py-2 px-3 whitespace-nowrap bg-amber-50/60">
+                                  {tier ? <span className="inline-flex items-center gap-1"><Banknote className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />{formatBonus(tier, row.totalFYP)}</span> : <span className="text-gray-300">—</span>}
+                                </td>
+                              )}
                               <td className="text-[12px] text-center py-2 px-3 whitespace-nowrap">{tier ? <span className="text-emerald-600 font-medium">✓</span> : <span className="text-gray-400 italic text-[10px]">{getMissingLabel(metric, isActivityRoundMode(conditionType))}</span>}</td>
                             </tr>
                           ))}
