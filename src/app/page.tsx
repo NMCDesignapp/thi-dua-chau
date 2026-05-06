@@ -167,14 +167,14 @@ function ContestPoster({ contestTitle, startDate, endDate, conditionType, target
         </div>
         <div className="flex gap-2 overflow-x-auto pb-1 mb-3 scrollbar-none">
           {sortedTiers.map((tier, i) => (
-            <div key={tier.id} className={`flex-shrink-0 rounded-lg px-2.5 py-1.5 bg-gradient-to-br ${tierColors[i % tierColors.length]} text-white min-w-[100px] shadow-md`}>
+            <div key={tier.id} className={`flex-shrink-0 rounded-lg px-2.5 py-1.5 bg-gradient-to-br ${tierColors[i % tierColors.length]} text-white min-w-[100px] shadow-md neon-tier-card`}>
               <div className="flex items-center gap-1 mb-0.5">{tier.bonusType === 'gift' ? <Gift className="w-3 h-3 opacity-80" /> : tier.bonusType === 'percent' ? <Percent className="w-3 h-3 opacity-80" /> : tier.bonusType === 'money_per_round' ? <Zap className="w-3 h-3 opacity-80" /> : <Sparkles className="w-3 h-3 opacity-80" />}<span className="text-[9px] font-bold uppercase opacity-90">{usePhase2 ? `GĐ1 Mức ${i + 1}` : `Mức ${i + 1}`}</span></div>
               <div className="text-[10px] font-semibold leading-tight">{isActivityRoundMode(conditionType) || conditionType === 'nyd_activity' ? `${tier.minFYP}${tier.maxFYP ? ` - ${tier.maxFYP}` : ' ↑'} lượt` : `${fc(tier.minFYP)}${tier.maxFYP ? ` - ${fc(tier.maxFYP)}` : ' ↑'}`}</div>
               <div className="text-xs font-extrabold mt-0.5 truncate" title={formatBonus(tier)}>{formatBonus(tier)}</div>
             </div>
           ))}
           {usePhase2 && sortedTiers2.length > 0 && sortedTiers2.map((tier, i) => (
-            <div key={`p2-${tier.id}`} className="flex-shrink-0 rounded-lg px-2.5 py-1.5 bg-gradient-to-br from-blue-400 to-indigo-500 text-white min-w-[100px] shadow-md">
+            <div key={`p2-${tier.id}`} className="flex-shrink-0 rounded-lg px-2.5 py-1.5 bg-gradient-to-br from-blue-400 to-indigo-500 text-white min-w-[100px] shadow-md neon-tier-card">
               <div className="flex items-center gap-1 mb-0.5">{tier.bonusType === 'gift' ? <Gift className="w-3 h-3 opacity-80" /> : tier.bonusType === 'percent' ? <Percent className="w-3 h-3 opacity-80" /> : tier.bonusType === 'money_per_round' ? <Zap className="w-3 h-3 opacity-80" /> : <Sparkles className="w-3 h-3 opacity-80" />}<span className="text-[9px] font-bold uppercase opacity-90">GĐ2 Mức {i + 1}</span></div>
               <div className="text-[10px] font-semibold leading-tight">{isActivityRoundMode(conditionType) || conditionType === 'nyd_activity' ? `${tier.minFYP}${tier.maxFYP ? ` - ${tier.maxFYP}` : ' ↑'} lượt` : `${fc(tier.minFYP)}${tier.maxFYP ? ` - ${fc(tier.maxFYP)}` : ' ↑'}`}</div>
               <div className="text-xs font-extrabold mt-0.5 truncate" title={formatBonus(tier)}>{formatBonus(tier)}</div>
@@ -187,7 +187,7 @@ function ContestPoster({ contestTitle, startDate, endDate, conditionType, target
           <div className="bg-white/10 backdrop-blur-sm rounded-lg p-2 text-center border border-white/10"><div className="flex items-center justify-center gap-1 mb-0.5"><Users className="w-3 h-3 text-sky-300" /><span className="text-[9px] text-sky-300 uppercase">Đạt/Chưa</span></div><p className="text-lg font-extrabold">{hasData ? <><span className="text-emerald-300">{achievedCount}</span><span className="text-white/40 mx-0.5">/</span><span className="text-red-300">{notAchievedCount}</span></> : <span className="text-white/40">—</span>}</p></div>
           <div className="bg-gradient-to-br from-amber-500/30 to-orange-500/20 backdrop-blur-sm rounded-lg p-2 text-center border border-amber-400/30"><div className="flex items-center justify-center gap-1 mb-0.5"><Award className="w-3 h-3 text-amber-200" /><span className="text-[9px] text-amber-200 uppercase">Tổng Thưởng</span></div><p className="text-sm font-extrabold text-amber-100">{hasData ? fc(totalBonus) : '—'}</p></div>
         </div>
-        {hasData && (<div className="space-y-1"><div className="flex items-center justify-between text-xs"><span className="text-emerald-200 font-medium">Tỷ lệ đạt</span><span className="text-white font-bold">{achievementPercent}%</span></div><div className="relative h-2.5 bg-white/10 rounded-full overflow-hidden"><div className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 to-amber-400 rounded-full transition-all duration-700" style={{ width: `${achievementPercent}%` }} /><div className="absolute inset-0 flex items-center justify-center"><span className="text-[8px] font-bold text-white drop-shadow-sm">{achievedCount}/{rowCount}</span></div></div></div>)}
+        {hasData && (<div className="space-y-1"><div className="flex items-center justify-between text-xs"><span className="text-emerald-200 font-medium">Tỷ lệ đạt</span><span className="text-white font-bold">{achievementPercent}%</span></div><div className="relative h-2.5 bg-white/10 rounded-full overflow-hidden"><div className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 to-amber-400 rounded-full transition-all duration-700 neon-progress" style={{ width: `${achievementPercent}%` }} /><div className="absolute inset-0 flex items-center justify-center"><span className="text-[8px] font-bold text-white drop-shadow-sm">{achievedCount}/{rowCount}</span></div></div></div>)}
         {!hasData && isPreview && (<div className="text-center py-1"><p className="text-emerald-200/60 text-xs italic">Nhấn &ldquo;Tính kết quả&rdquo; để xem</p></div>)}
       </div>
     </div>
@@ -1317,17 +1317,17 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#0f1419]">
       {/* Header */}
-      <header className="border-b border-[#2f3640] bg-[#0f1419]/95 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b border-[#2f3640] bg-[#0f1419]/95 backdrop-blur-sm sticky top-0 z-50 neon-header-line">
         <div className="max-w-5xl mx-auto px-3 py-2.5 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-9 h-9 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center"><Trophy className="w-4 h-4 text-white" /></div>
-            <div><h1 className="text-base font-bold text-[#e7e9ea]">Tính Thưởng Thi Đua</h1><p className="text-[10px] text-[#71767b]">Quản lý & tính thưởng IP</p></div>
+            <div className="w-9 h-9 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center neon-step"><Trophy className="w-4 h-4 text-white" /></div>
+            <div><h1 className="text-base font-bold text-[#e7e9ea] neon-text-glow">Tính Thưởng Thi Đua</h1><p className="text-[10px] text-[#71767b]">Quản lý & tính thưởng IP</p></div>
           </div>
           <div className="flex items-center gap-1.5">
-            <Button variant="outline" size="sm" className="border-[#00c853] text-[#00c853] hover:bg-[#00c853]/10 h-8 text-xs" onClick={() => setIsImportDialogOpen(true)}>
+            <Button variant="outline" size="sm" className="border-[#00c853] text-[#00c853] hover:bg-[#00c853]/10 hover:shadow-[0_0_8px_rgba(0,200,83,0.2)] h-8 text-xs transition-all duration-300" onClick={() => setIsImportDialogOpen(true)}>
               <Link className="w-3.5 h-3.5 mr-1" /> Nhập Google Sheets
             </Button>
-            <Button size="sm" className="bg-[#00c853] hover:bg-[#00c853]/90 h-8 text-xs" onClick={() => setIsAddDialogOpen(true)}>
+            <Button size="sm" className="bg-[#00c853] hover:bg-[#00c853]/90 h-8 text-xs neon-btn-primary" onClick={() => setIsAddDialogOpen(true)}>
               <Plus className="w-3.5 h-3.5 mr-1" /> Thêm HĐ
             </Button>
           </div>
@@ -1336,11 +1336,11 @@ export default function Home() {
 
       <main className="max-w-5xl mx-auto px-3 py-4 space-y-4">
         {/* STEP 1: Info */}
-        <Card className="border-[#2f3640] shadow-sm bg-[#1a1f26]">
+        <Card className="border-[#2f3640] shadow-sm bg-[#1a1f26] neon-card animate-fade-in-up">
           <CardHeader className="pb-2 pt-4 px-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full bg-[#00c853] text-white flex items-center justify-center text-sm font-bold">1</div>
+                <div className="w-7 h-7 rounded-full bg-[#00c853] text-white flex items-center justify-center text-sm font-bold neon-step">1</div>
                 <CardTitle className="text-sm text-[#e7e9ea]">Thông tin chương trình</CardTitle>
               </div>
               <div className="flex items-center gap-1.5">
@@ -1355,19 +1355,19 @@ export default function Home() {
           <CardContent className="px-4 pb-4 space-y-3">
             <div className="space-y-2">
               <Label className="text-xs font-medium text-[#e7e9ea]">Tên chương trình thi đua</Label>
-              <Input value={contestTitle} onChange={(e) => setContestTitle(e.target.value)} className="font-semibold border-[#2f3640] h-9 text-sm bg-[#252d37] text-[#e7e9ea]" />
+              <Input value={contestTitle} onChange={(e) => setContestTitle(e.target.value)} className="font-semibold border-[#2f3640] h-9 text-sm bg-[#252d37] text-[#e7e9ea] neon-input" />
             </div>
             <div className="grid grid-cols-3 gap-2">
-              <div className="space-y-1"><Label className="text-xs text-[#71767b]">Hiệu lực từ</Label><Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="h-8 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
-              <div className="space-y-1"><Label className="text-xs text-[#71767b]">Hiệu lực đến</Label><Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="h-8 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
-              <div className="space-y-1"><Label className="text-xs text-[#71767b]">Ngày phát hành</Label><Input type="date" value={issueDate} onChange={(e) => setIssueDate(e.target.value)} className="h-8 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
+              <div className="space-y-1"><Label className="text-xs text-[#71767b]">Hiệu lực từ</Label><Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="h-8 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" /></div>
+              <div className="space-y-1"><Label className="text-xs text-[#71767b]">Hiệu lực đến</Label><Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="h-8 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" /></div>
+              <div className="space-y-1"><Label className="text-xs text-[#71767b]">Ngày phát hành</Label><Input type="date" value={issueDate} onChange={(e) => setIssueDate(e.target.value)} className="h-8 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" /></div>
             </div>
             {/* Phase 2 toggle */}
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => setUsePhase2(!usePhase2)}
-                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all ${usePhase2 ? 'bg-blue-500/20 border-blue-400/50 text-blue-300' : 'bg-[#252d37] border-[#2f3640] text-[#71767b] hover:bg-[#252d37]/80'}`}
+                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all neon-toggle ${usePhase2 ? 'bg-blue-500/20 border-blue-400/50 text-blue-300 shadow-[0_0_8px_rgba(59,130,246,0.3)]' : 'bg-[#252d37] border-[#2f3640] text-[#71767b] hover:bg-[#252d37]/80'}`}
               >
                 <Layers className="w-3 h-3" />
                 Giai đoạn 2
@@ -1379,8 +1379,8 @@ export default function Home() {
             {usePhase2 && (
               <div className="rounded-lg border border-[#2f3640] bg-[#252d37]/50 p-2.5 space-y-2">
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="space-y-1"><Label className="text-[10px] text-blue-300">GĐ2 bắt đầu</Label><Input type="date" value={phase2StartDate} onChange={(e) => setPhase2StartDate(e.target.value)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
-                  <div className="space-y-1"><Label className="text-[10px] text-blue-300">GĐ2 kết thúc</Label><Input type="date" value={phase2EndDate} onChange={(e) => setPhase2EndDate(e.target.value)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
+                  <div className="space-y-1"><Label className="text-[10px] text-blue-300">GĐ2 bắt đầu</Label><Input type="date" value={phase2StartDate} onChange={(e) => setPhase2StartDate(e.target.value)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" /></div>
+                  <div className="space-y-1"><Label className="text-[10px] text-blue-300">GĐ2 kết thúc</Label><Input type="date" value={phase2EndDate} onChange={(e) => setPhase2EndDate(e.target.value)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" /></div>
                 </div>
                 <p className="text-[10px] text-blue-400">HĐ hiệu lực trong GĐ2 sẽ tính thưởng theo tỷ lệ GĐ2</p>
               </div>
@@ -1389,10 +1389,10 @@ export default function Home() {
         </Card>
 
         {/* STEP 2: Config */}
-        <Card className="border-[#2f3640] shadow-sm bg-[#1a1f26]">
+        <Card className="border-[#2f3640] shadow-sm bg-[#1a1f26] neon-card neon-card-amber animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           <CardHeader className="pb-2 pt-4 px-4">
             <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full bg-amber-500 text-white flex items-center justify-center text-sm font-bold">2</div>
+              <div className="w-7 h-7 rounded-full bg-amber-500 text-white flex items-center justify-center text-sm font-bold neon-step-amber">2</div>
               <CardTitle className="text-sm text-[#e7e9ea]">Cấu hình thi đua & Thưởng</CardTitle>
             </div>
           </CardHeader>
@@ -1404,9 +1404,9 @@ export default function Home() {
                 <Label className="text-[10px] uppercase tracking-wider font-semibold text-[#71767b] mb-1.5 block">Đối tượng</Label>
                 <div className="flex flex-wrap gap-1.5">
                   {([
-                    { value: 'tvv' as TargetType, label: 'TVV', icon: Users, activeCls: 'bg-emerald-500 text-white shadow-emerald-200 shadow-md', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]', disabled: isActivityRoundMode(conditionType) && targetType !== 'nhom' },
-                    { value: 'nhom' as TargetType, label: 'Nhóm', icon: UserCheck, activeCls: 'bg-sky-500 text-white shadow-sky-200 shadow-md', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]', disabled: isActivityRoundMode(conditionType) && targetType !== 'nhom' },
-                    { value: 'nyd' as TargetType, label: 'NYD', icon: UserCog, activeCls: 'bg-violet-500 text-white shadow-violet-200 shadow-md', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]', disabled: false },
+                    { value: 'tvv' as TargetType, label: 'TVV', icon: Users, activeCls: 'bg-emerald-500 text-white shadow-emerald-200 shadow-md shadow-[0_0_12px_rgba(16,185,129,0.4)]', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]', disabled: isActivityRoundMode(conditionType) && targetType !== 'nhom' },
+                    { value: 'nhom' as TargetType, label: 'Nhóm', icon: UserCheck, activeCls: 'bg-sky-500 text-white shadow-sky-200 shadow-md shadow-[0_0_12px_rgba(14,165,233,0.4)]', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]', disabled: isActivityRoundMode(conditionType) && targetType !== 'nhom' },
+                    { value: 'nyd' as TargetType, label: 'NYD', icon: UserCog, activeCls: 'bg-violet-500 text-white shadow-violet-200 shadow-md shadow-[0_0_12px_rgba(139,92,246,0.4)]', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]', disabled: false },
                   ]).map(({ value, label, icon: Icon, activeCls, inactiveCls, disabled }) => (
                     <button
                       key={value}
@@ -1425,7 +1425,7 @@ export default function Home() {
                       }}
                       className={`
                         inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold
-                        transition-all duration-200 ease-out cursor-pointer select-none
+                        transition-all duration-300 ease-out cursor-pointer select-none neon-chip
                         active:scale-95 active:shadow-none
                         ${targetType === value ? activeCls : inactiveCls}
                         ${disabled ? 'opacity-40 pointer-events-none' : 'hover:scale-105'}
@@ -1444,8 +1444,8 @@ export default function Home() {
                 {targetType === 'nyd' ? (
                   <div className="flex flex-wrap gap-1.5">
                     {([
-                      { value: 'nyd_activity' as ConditionType, label: 'Lượt TVVm HĐ', activeCls: 'bg-violet-500 text-white shadow-violet-200 shadow-md', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]' },
-                      { value: 'nyd_fyp' as ConditionType, label: 'FYP TVVm', activeCls: 'bg-violet-500 text-white shadow-violet-200 shadow-md', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]' },
+                      { value: 'nyd_activity' as ConditionType, label: 'Lượt TVVm HĐ', activeCls: 'bg-violet-500 text-white shadow-violet-200 shadow-md shadow-[0_0_12px_rgba(139,92,246,0.4)]', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]' },
+                      { value: 'nyd_fyp' as ConditionType, label: 'FYP TVVm', activeCls: 'bg-violet-500 text-white shadow-violet-200 shadow-md shadow-[0_0_12px_rgba(139,92,246,0.4)]', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]' },
                     ]).map(({ value, label, activeCls, inactiveCls }) => (
                       <button
                         key={value}
@@ -1453,7 +1453,7 @@ export default function Home() {
                         onClick={() => setConditionType(value)}
                         className={`
                           inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold
-                          transition-all duration-200 ease-out cursor-pointer select-none
+                          transition-all duration-300 ease-out cursor-pointer select-none neon-chip
                           active:scale-95 active:shadow-none
                           ${conditionType === value ? activeCls : inactiveCls}
                           hover:scale-105
@@ -1502,7 +1502,7 @@ export default function Home() {
                         }}
                         className={`
                           inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold
-                          transition-all duration-200 ease-out cursor-pointer select-none
+                          transition-all duration-300 ease-out cursor-pointer select-none neon-chip
                           active:scale-95 active:shadow-none
                           ${conditionType === value ? activeCls : inactiveCls}
                           hover:scale-105
@@ -1539,7 +1539,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={() => setUseSecondaryCondition(!useSecondaryCondition)}
-                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all ${useSecondaryCondition ? 'bg-teal-500/20 border-teal-400/50 text-teal-300' : 'bg-[#252d37] border-[#2f3640] text-[#71767b] hover:bg-[#252d37]/80'}`}
+                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all neon-toggle ${useSecondaryCondition ? 'bg-teal-500/20 border-teal-400/50 text-teal-300 shadow-[0_0_8px_rgba(20,184,166,0.3)]' : 'bg-[#252d37] border-[#2f3640] text-[#71767b] hover:bg-[#252d37]/80'}`}
               >
                 <Shield className="w-3 h-3" />
                 Điều kiện phụ
@@ -1552,13 +1552,13 @@ export default function Home() {
               <div className="rounded-lg border border-[#2f3640] bg-[#252d37]/50 p-2.5 space-y-2">
                 <p className="text-[10px] text-teal-300 font-medium">Chỉ tính HĐ thỏa mãn điều kiện phụ:</p>
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="space-y-1"><Label className="text-[10px] text-teal-300">AFYP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(secondaryAFYPMin) || ''} onChange={(e) => setSecondaryAFYPMin(nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
-                  <div className="space-y-1"><Label className="text-[10px] text-teal-300">IP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(secondaryIPMin) || ''} onChange={(e) => setSecondaryIPMin(nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
+                  <div className="space-y-1"><Label className="text-[10px] text-teal-300">AFYP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(secondaryAFYPMin) || ''} onChange={(e) => setSecondaryAFYPMin(nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" /></div>
+                  <div className="space-y-1"><Label className="text-[10px] text-teal-300">IP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(secondaryIPMin) || ''} onChange={(e) => setSecondaryIPMin(nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" /></div>
                 </div>
               </div>
             )}
 
-            <Separator className="bg-[#2f3640]" />
+            <div className="neon-line" />
 
             {/* Bonus Tiers */}
             <div className="space-y-2">
@@ -1568,7 +1568,7 @@ export default function Home() {
               </div>
               <div className="space-y-2">
                 {bonusTiers.map((tier, index) => (
-                  <div key={tier.id} className="p-2 rounded-lg bg-[#252d37]/50 border border-[#2f3640]">
+                  <div key={tier.id} className="p-2 rounded-lg bg-[#252d37]/50 border border-[#2f3640] neon-tier-card">
                     <div className="flex items-center gap-1.5 mb-1.5">
                       <span className="text-[10px] font-bold text-amber-300 bg-amber-900/40 px-1.5 py-0.5 rounded">Mức {index + 1}</span>
                       <div className="flex items-center gap-0.5 ml-auto">
@@ -1581,20 +1581,20 @@ export default function Home() {
                     <div className="grid grid-cols-3 gap-1.5">
                       {isActivityRoundMode(conditionType) || conditionType === 'nyd_activity' ? (
                         <>
-                          <div><Label className="text-[9px] text-muted-foreground">Lượt từ</Label><Input type="number" placeholder="0" value={tier.minFYP || ''} onChange={(e) => updateBonusTier(tier.id, 'minFYP', parseInt(e.target.value) || 0)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
-                          <div><Label className="text-[9px] text-muted-foreground">Lượt đến</Label><Input type="number" placeholder="∞" value={tier.maxFYP || ''} onChange={(e) => updateBonusTier(tier.id, 'maxFYP', e.target.value ? parseInt(e.target.value) : null)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
+                          <div><Label className="text-[9px] text-muted-foreground">Lượt từ</Label><Input type="number" placeholder="0" value={tier.minFYP || ''} onChange={(e) => updateBonusTier(tier.id, 'minFYP', parseInt(e.target.value) || 0)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" /></div>
+                          <div><Label className="text-[9px] text-muted-foreground">Lượt đến</Label><Input type="number" placeholder="∞" value={tier.maxFYP || ''} onChange={(e) => updateBonusTier(tier.id, 'maxFYP', e.target.value ? parseInt(e.target.value) : null)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" /></div>
                         </>
                       ) : (
                         <>
-                          <div><Label className="text-[9px] text-muted-foreground">IP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(tier.minFYP) || ''} onChange={(e) => updateBonusTier(tier.id, 'minFYP', nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
-                          <div><Label className="text-[9px] text-muted-foreground">IP đến (ngàn)</Label><Input type="number" placeholder="∞" value={tier.maxFYP ? vndToNgan(tier.maxFYP) : ''} onChange={(e) => updateBonusTier(tier.id, 'maxFYP', e.target.value ? nganToVnd(parseFloat(e.target.value)) : null)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
+                          <div><Label className="text-[9px] text-muted-foreground">IP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(tier.minFYP) || ''} onChange={(e) => updateBonusTier(tier.id, 'minFYP', nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" /></div>
+                          <div><Label className="text-[9px] text-muted-foreground">IP đến (ngàn)</Label><Input type="number" placeholder="∞" value={tier.maxFYP ? vndToNgan(tier.maxFYP) : ''} onChange={(e) => updateBonusTier(tier.id, 'maxFYP', e.target.value ? nganToVnd(parseFloat(e.target.value)) : null)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" /></div>
                         </>
                       )}
                       <div>
                         <Label className="text-[9px] text-muted-foreground">{tier.bonusType === 'money' ? 'Thưởng (ngàn)' : tier.bonusType === 'money_per_round' ? 'Tiền/lượt (ngàn)' : tier.bonusType === 'percent' ? '% IP' : 'Quà tặng'}</Label>
                         {tier.bonusType === 'money' || tier.bonusType === 'money_per_round' ? <Input type="number" placeholder="0" value={vndToNgan(tier.bonusAmount) || ''} onChange={(e) => updateBonusTier(tier.id, 'bonusAmount', nganToVnd(parseFloat(e.target.value) || 0))} className={`h-7 text-xs ${tier.bonusType === 'money_per_round' ? 'border-[#2f3640] bg-[#252d37] text-[#e7e9ea]' : 'border-[#2f3640] bg-[#252d37] text-[#e7e9ea]'}`} />
-                        : tier.bonusType === 'percent' ? <Input type="number" placeholder="7" value={tier.bonusPercent || ''} onChange={(e) => updateBonusTier(tier.id, 'bonusPercent', parseFloat(e.target.value) || 0)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" />
-                        : <Input type="text" placeholder="VD: iPhone 15" value={tier.bonusText} onChange={(e) => updateBonusTier(tier.id, 'bonusText', e.target.value)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" />}
+                        : tier.bonusType === 'percent' ? <Input type="number" placeholder="7" value={tier.bonusPercent || ''} onChange={(e) => updateBonusTier(tier.id, 'bonusPercent', parseFloat(e.target.value) || 0)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" />
+                        : <Input type="text" placeholder="VD: iPhone 15" value={tier.bonusText} onChange={(e) => updateBonusTier(tier.id, 'bonusText', e.target.value)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" />}
                       </div>
                     </div>
                   </div>
@@ -1616,7 +1616,7 @@ export default function Home() {
                   )}
                   <div className="space-y-2">
                     {bonusTiers2.map((tier, index) => (
-                      <div key={tier.id} className="p-2 rounded-lg bg-[#252d37]/50 border border-[#2f3640]">
+                      <div key={tier.id} className="p-2 rounded-lg bg-[#252d37]/50 border border-[#2f3640] neon-tier-card">
                         <div className="flex items-center gap-1.5 mb-1.5">
                           <span className="text-[10px] font-bold text-blue-300 bg-blue-900/40 px-1.5 py-0.5 rounded">Mức GĐ2 {index + 1}</span>
                           <div className="flex items-center gap-0.5 ml-auto">
@@ -1629,20 +1629,20 @@ export default function Home() {
                         <div className="grid grid-cols-3 gap-1.5">
                           {isActivityRoundMode(conditionType) || conditionType === 'nyd_activity' ? (
                             <>
-                              <div><Label className="text-[9px] text-muted-foreground">Lượt từ</Label><Input type="number" placeholder="0" value={tier.minFYP || ''} onChange={(e) => updateBonusTier2(tier.id, 'minFYP', parseInt(e.target.value) || 0)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
-                              <div><Label className="text-[9px] text-muted-foreground">Lượt đến</Label><Input type="number" placeholder="∞" value={tier.maxFYP || ''} onChange={(e) => updateBonusTier2(tier.id, 'maxFYP', e.target.value ? parseInt(e.target.value) : null)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
+                              <div><Label className="text-[9px] text-muted-foreground">Lượt từ</Label><Input type="number" placeholder="0" value={tier.minFYP || ''} onChange={(e) => updateBonusTier2(tier.id, 'minFYP', parseInt(e.target.value) || 0)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" /></div>
+                              <div><Label className="text-[9px] text-muted-foreground">Lượt đến</Label><Input type="number" placeholder="∞" value={tier.maxFYP || ''} onChange={(e) => updateBonusTier2(tier.id, 'maxFYP', e.target.value ? parseInt(e.target.value) : null)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" /></div>
                             </>
                           ) : (
                             <>
-                              <div><Label className="text-[9px] text-muted-foreground">IP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(tier.minFYP) || ''} onChange={(e) => updateBonusTier2(tier.id, 'minFYP', nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
-                              <div><Label className="text-[9px] text-muted-foreground">IP đến (ngàn)</Label><Input type="number" placeholder="∞" value={tier.maxFYP ? vndToNgan(tier.maxFYP) : ''} onChange={(e) => updateBonusTier2(tier.id, 'maxFYP', e.target.value ? nganToVnd(parseFloat(e.target.value)) : null)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
+                              <div><Label className="text-[9px] text-muted-foreground">IP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(tier.minFYP) || ''} onChange={(e) => updateBonusTier2(tier.id, 'minFYP', nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" /></div>
+                              <div><Label className="text-[9px] text-muted-foreground">IP đến (ngàn)</Label><Input type="number" placeholder="∞" value={tier.maxFYP ? vndToNgan(tier.maxFYP) : ''} onChange={(e) => updateBonusTier2(tier.id, 'maxFYP', e.target.value ? nganToVnd(parseFloat(e.target.value)) : null)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" /></div>
                             </>
                           )}
                           <div>
                             <Label className="text-[9px] text-muted-foreground">{tier.bonusType === 'money' ? 'Thưởng (ngàn)' : tier.bonusType === 'money_per_round' ? 'Tiền/lượt (ngàn)' : tier.bonusType === 'percent' ? '% IP' : 'Quà tặng'}</Label>
                             {tier.bonusType === 'money' || tier.bonusType === 'money_per_round' ? <Input type="number" placeholder="0" value={vndToNgan(tier.bonusAmount) || ''} onChange={(e) => updateBonusTier2(tier.id, 'bonusAmount', nganToVnd(parseFloat(e.target.value) || 0))} className={`h-7 text-xs ${tier.bonusType === 'money_per_round' ? 'border-[#2f3640] bg-[#252d37] text-[#e7e9ea]' : 'border-[#2f3640] bg-[#252d37] text-[#e7e9ea]'}`} />
-                            : tier.bonusType === 'percent' ? <Input type="number" placeholder="7" value={tier.bonusPercent || ''} onChange={(e) => updateBonusTier2(tier.id, 'bonusPercent', parseFloat(e.target.value) || 0)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" />
-                            : <Input type="text" placeholder="VD: iPhone 15" value={tier.bonusText} onChange={(e) => updateBonusTier2(tier.id, 'bonusText', e.target.value)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" />}
+                            : tier.bonusType === 'percent' ? <Input type="number" placeholder="7" value={tier.bonusPercent || ''} onChange={(e) => updateBonusTier2(tier.id, 'bonusPercent', parseFloat(e.target.value) || 0)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" />
+                            : <Input type="text" placeholder="VD: iPhone 15" value={tier.bonusText} onChange={(e) => updateBonusTier2(tier.id, 'bonusText', e.target.value)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input" />}
                           </div>
                         </div>
                       </div>
@@ -1652,7 +1652,7 @@ export default function Home() {
               </>
             )}
 
-            <Separator className="bg-[#2f3640]" />
+            <div className="neon-line" />
 
             {/* Poster + Action */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
@@ -1665,7 +1665,7 @@ export default function Home() {
                 {posterUrl && <img src={posterUrl} alt="Preview" className="h-8 rounded border" />}
               </div>
               <div className="flex gap-2 sm:ml-auto">
-                <Button onClick={handleSearch} className="bg-[#00c853] hover:bg-[#00c853]/90 h-9 text-sm"><Search className="w-4 h-4 mr-1.5" /> Tính kết quả thi đua</Button>
+                <Button onClick={handleSearch} className="bg-[#00c853] hover:bg-[#00c853]/90 h-9 text-sm neon-btn-primary"><Search className="w-4 h-4 mr-1.5" /> Tính kết quả thi đua</Button>
                 <Button variant="outline" onClick={() => { setStartDate(''); setEndDate(''); setIssueDate(''); setFilteredContracts([]); setSelectedContestId(''); }} className="h-9"><X className="w-4 h-4" /></Button>
               </div>
             </div>
@@ -1673,11 +1673,11 @@ export default function Home() {
         </Card>
 
         {/* STEP 3: Participant List */}
-        <Card className="border-[#2f3640] shadow-sm bg-[#1a1f26]">
+        <Card className="border-[#2f3640] shadow-sm bg-[#1a1f26] neon-card neon-card-violet animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
           <CardHeader className="pb-2 pt-4 px-4">
             <button className="flex items-center justify-between w-full" onClick={() => setShowParticipantList(!showParticipantList)}>
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full bg-violet-500 text-white flex items-center justify-center text-sm font-bold">3</div>
+                <div className="w-7 h-7 rounded-full bg-violet-500 text-white flex items-center justify-center text-sm font-bold neon-step-violet">3</div>
                 <CardTitle className="text-sm text-[#e7e9ea]">Danh sách đối tượng</CardTitle>
                 {useParticipantFilter && participants.length > 0 && <Badge variant="secondary" className="text-[10px] bg-violet-900/40 text-violet-300">{participants.length} người</Badge>}
               </div>
@@ -1700,16 +1700,16 @@ export default function Home() {
                   </div>
 
                   {participants.length > 0 && (
-                    <div className="rounded-lg border border-[#2f3640] overflow-x-auto max-h-48 overflow-y-auto">
+                    <div className="rounded-lg border border-[#2f3640] overflow-x-auto max-h-48 overflow-y-auto neon-scrollbar">
                       <Table>
                         <TableHeader><TableRow className="bg-[#252d37]"><TableHead className="text-[10px] w-[35px] text-center">STT</TableHead><TableHead className="text-[10px]">Nhóm</TableHead><TableHead className="text-[10px]">Mã Số</TableHead><TableHead className="text-[10px]">Họ Tên</TableHead><TableHead className="w-[30px]"></TableHead></TableRow></TableHeader>
                         <TableBody>
                           {participants.map((p, idx) => (
                             <TableRow key={p.id}>
                               <TableCell className="text-center text-gray-500 text-[10px]">{idx + 1}</TableCell>
-                              <TableCell><Input value={p.nhom} onChange={(e) => updateParticipant(p.id, 'nhom', e.target.value)} className="h-6 text-[10px] border-[#2f3640] bg-[#252d37] text-[#e7e9ea] min-w-[60px]" /></TableCell>
-                              <TableCell><Input value={p.maSo} onChange={(e) => updateParticipant(p.id, 'maSo', e.target.value)} className="h-6 text-[10px] border-[#2f3640] bg-[#252d37] text-[#e7e9ea] min-w-[80px]" placeholder="Mã ĐL" /></TableCell>
-                              <TableCell><Input value={p.hoTen} onChange={(e) => updateParticipant(p.id, 'hoTen', e.target.value)} className="h-6 text-[10px] border-[#2f3640] bg-[#252d37] text-[#e7e9ea] min-w-[120px]" placeholder="Họ tên" /></TableCell>
+                              <TableCell><Input value={p.nhom} onChange={(e) => updateParticipant(p.id, 'nhom', e.target.value)} className="h-6 text-[10px] border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input min-w-[60px]" /></TableCell>
+                              <TableCell><Input value={p.maSo} onChange={(e) => updateParticipant(p.id, 'maSo', e.target.value)} className="h-6 text-[10px] border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input min-w-[80px]" placeholder="Mã ĐL" /></TableCell>
+                              <TableCell><Input value={p.hoTen} onChange={(e) => updateParticipant(p.id, 'hoTen', e.target.value)} className="h-6 text-[10px] border-[#2f3640] bg-[#252d37] text-[#e7e9ea] neon-input min-w-[120px]" placeholder="Họ tên" /></TableCell>
                               <TableCell><Button variant="ghost" size="sm" onClick={() => removeParticipant(p.id)} className="h-5 w-5 p-0 text-red-400 hover:text-red-600"><Trash2 className="w-2.5 h-2.5" /></Button></TableCell>
                             </TableRow>
                           ))}
@@ -1732,9 +1732,9 @@ export default function Home() {
         {hasResults && (
           <div className="space-y-3">
             <div className="flex items-center gap-1.5 justify-end flex-wrap">
-              <Button variant="outline" size="sm" onClick={handleCopyText} className="border-[#00c853] text-[#00c853] h-7 text-xs"><Copy className="w-3 h-3 mr-1" />Copy</Button>
-              <Button variant="outline" size="sm" onClick={handlePrint} className="border-[#00c853] text-[#00c853] h-7 text-xs"><Printer className="w-3 h-3 mr-1" />In PDF</Button>
-              <Button variant="outline" size="sm" onClick={handleExportImage} className="border-[#00c853] text-[#00c853] h-7 text-xs"><ImageIcon className="w-3 h-3 mr-1" />Ảnh</Button>
+              <Button variant="outline" size="sm" onClick={handleCopyText} className="border-[#00c853] text-[#00c853] h-7 text-xs hover:shadow-[0_0_8px_rgba(0,200,83,0.2)] transition-all duration-300"><Copy className="w-3 h-3 mr-1" />Copy</Button>
+              <Button variant="outline" size="sm" onClick={handlePrint} className="border-[#00c853] text-[#00c853] h-7 text-xs hover:shadow-[0_0_8px_rgba(0,200,83,0.2)] transition-all duration-300"><Printer className="w-3 h-3 mr-1" />In PDF</Button>
+              <Button variant="outline" size="sm" onClick={handleExportImage} className="border-[#00c853] text-[#00c853] h-7 text-xs hover:shadow-[0_0_8px_rgba(0,200,83,0.2)] transition-all duration-300"><ImageIcon className="w-3 h-3 mr-1" />Ảnh</Button>
               <Button variant="outline" size="sm" onClick={handleExportCSV} className="h-7 text-xs"><Download className="w-3 h-3 mr-1" />CSV</Button>
               <Button variant="outline" size="sm" onClick={handleExportExcel} className="h-7 text-xs border-[#00c853] text-[#00c853]"><FileSpreadsheet className="w-3 h-3 mr-1" />Excel</Button>
             </div>
@@ -1784,7 +1784,7 @@ export default function Home() {
                       </button>
                       <span className="text-[10px] text-gray-400">{hideNotAchieved ? 'Chỉ hiện hàng đạt thưởng' : `Sắp xếp: ${getMetricHeaderLabel()} ↓`}</span>
                     </div>}
-                    <div className="overflow-x-auto max-h-[70vh] overflow-y-auto rounded-lg border-2 border-emerald-300 shadow-[inset_0_2px_6px_rgba(0,0,0,0.06)]">
+                    <div className="overflow-x-auto max-h-[70vh] overflow-y-auto rounded-lg border-2 border-emerald-300 shadow-[inset_0_2px_6px_rgba(0,0,0,0.06)] neon-scrollbar">
                       <table className="w-full border-collapse" style={{ minWidth: '100%' }}>
                         <thead className="sticky top-0 z-10">
                           <tr className="bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600">
@@ -2094,7 +2094,7 @@ export default function Home() {
         )}
 
         {/* Source Data - collapsible */}
-        <Card className="border-[#2f3640] shadow-sm bg-[#1a1f26]">
+        <Card className="border-[#2f3640] shadow-sm bg-[#1a1f26] neon-card animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
           <CardHeader className="pb-2 pt-3 px-4">
             <button className="flex items-center justify-between w-full" onClick={() => setShowSourceData(!showSourceData)}>
               <div className="flex items-center gap-2"><Database className="w-4 h-4 text-[#71767b]" /><CardTitle className="text-sm text-[#e7e9ea]">Dữ liệu nguồn</CardTitle><Badge variant="secondary" className="text-[10px]">{contracts.length} HĐ</Badge></div>
@@ -2106,7 +2106,7 @@ export default function Home() {
               {contracts.length === 0 ? (
                 <div className="text-center py-6 text-gray-400"><Database className="w-8 h-8 mx-auto mb-2 opacity-30" /><p className="text-sm font-medium">Chưa có dữ liệu</p><p className="text-xs">Nhấn &ldquo;Nhập Google Sheets&rdquo; để tải</p></div>
               ) : (
-                <div className="rounded-lg border border-[#2f3640] overflow-x-auto max-h-48 overflow-y-auto">
+                <div className="rounded-lg border border-[#2f3640] overflow-x-auto max-h-48 overflow-y-auto neon-scrollbar">
                   <Table><TableHeader><TableRow className="bg-[#252d37] sticky top-0"><TableHead className="w-[35px] text-center text-xs">STT</TableHead><TableHead className="text-xs">Nhóm</TableHead><TableHead className="text-xs">Mã</TableHead><TableHead className="text-xs">Họ tên</TableHead><TableHead className="text-xs">Chức vụ</TableHead><TableHead className="text-xs">Mã TN</TableHead><TableHead className="text-xs">Ngày HL</TableHead><TableHead className="text-xs">IP</TableHead><TableHead className="text-xs">Tính Lượt</TableHead><TableHead className="w-[30px]"></TableHead></TableRow></TableHeader>
                     <TableBody>{contracts.map((c, idx) => (
                       <TableRow key={c.id} className="hover:bg-[#252d37]/50"><TableCell className="text-center text-gray-500 text-xs">{idx + 1}</TableCell><TableCell className="font-mono text-[10px] text-emerald-700 whitespace-nowrap">{c.nhom}</TableCell><TableCell className="font-mono text-[10px] whitespace-nowrap">{c.agentCode}</TableCell><TableCell className="text-xs whitespace-nowrap">{c.agentName}</TableCell><TableCell className="text-[10px] whitespace-nowrap">{c.position}</TableCell><TableCell className="text-[10px] text-blue-600 whitespace-nowrap">{c.leaderAgentCode || '—'}</TableCell><TableCell className="text-[10px] text-gray-600 whitespace-nowrap">{formatDate(c.effectiveDate)}</TableCell><TableCell className="font-semibold text-emerald-700 text-xs whitespace-nowrap">{formatNumber(c.fyp)}</TableCell><TableCell className="text-[10px] text-gray-600 whitespace-nowrap">{c.tinhLuot ? formatNumber(c.tinhLuot) : '—'}</TableCell><TableCell><Button variant="ghost" size="sm" onClick={() => handleDeleteContract(c.id)} className="h-5 w-5 p-0 text-red-400 hover:text-red-600"><Trash2 className="w-3 h-3" /></Button></TableCell></TableRow>
@@ -2124,10 +2124,10 @@ export default function Home() {
         <DialogContent className="sm:max-w-lg bg-[#1a1f26] border-[#2f3640]">
           <DialogHeader><DialogTitle className="text-[#e7e9ea]">Nhập dữ liệu từ Google Sheets</DialogTitle><DialogDescription className="text-[#71767b]">Dán liên kết CSV để nhập dữ liệu hợp đồng</DialogDescription></DialogHeader>
           <div className="space-y-3 py-3">
-            <div className="space-y-1"><Label className="text-xs text-[#71767b]">Liên kết CSV</Label><Input value={csvUrl} onChange={(e) => setCsvUrl(e.target.value)} className="font-mono text-xs h-8 bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div>
+            <div className="space-y-1"><Label className="text-xs text-[#71767b]">Liên kết CSV</Label><Input value={csvUrl} onChange={(e) => setCsvUrl(e.target.value)} className="font-mono text-xs h-8 bg-[#252d37] border-[#2f3640] text-[#e7e9ea] neon-input" /></div>
             <div className="rounded-lg bg-[#252d37] border border-[#2f3640] p-2 text-xs text-amber-300"><p className="font-medium mb-1">Cột sử dụng:</p><ul className="space-y-0.5 ml-3 list-disc"><li><b>Ngày hiệu lực</b> → Ngày bắt đầu thi đua</li><li><b>PĐT + 10% ĐT</b> → IP</li><li><b>TÍNH LƯỢT</b> → Cột 27</li></ul></div>
           </div>
-          <DialogFooter><Button variant="outline" onClick={() => setIsImportDialogOpen(false)} className="h-8">Hủy</Button><Button onClick={handleImportFromUrl} disabled={isImporting} className="bg-[#00c853] hover:bg-[#00c853]/90 h-8">{isImporting ? <><Loader2 className="w-3 h-3 mr-1 animate-spin" /> Đang nhập...</> : <><RefreshCw className="w-3 h-3 mr-1" /> Nhập dữ liệu</>}</Button></DialogFooter>
+          <DialogFooter><Button variant="outline" onClick={() => setIsImportDialogOpen(false)} className="h-8">Hủy</Button><Button onClick={handleImportFromUrl} disabled={isImporting} className="bg-[#00c853] hover:bg-[#00c853]/90 h-8 neon-btn-primary">{isImporting ? <><Loader2 className="w-3 h-3 mr-1 animate-spin" /> Đang nhập...</> : <><RefreshCw className="w-3 h-3 mr-1" /> Nhập dữ liệu</>}</Button></DialogFooter>
         </DialogContent>
       </Dialog>
 
@@ -2136,14 +2136,14 @@ export default function Home() {
         <DialogContent className="sm:max-w-2xl bg-[#1a1f26] border-[#2f3640]">
           <DialogHeader><DialogTitle className="text-[#e7e9ea]">Thêm hợp đồng mới</DialogTitle></DialogHeader>
           <div className="grid gap-3 py-3">
-            <div className="grid grid-cols-2 gap-3"><div className="space-y-1"><Label className="text-xs text-[#71767b]">Số HĐ</Label><Input placeholder="10000017624818" value={newContract.contractNumber} onChange={(e) => setNewContract({ ...newContract, contractNumber: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Mã đại lý</Label><Input placeholder="D104142435" value={newContract.agentCode} onChange={(e) => setNewContract({ ...newContract, agentCode: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div></div>
-            <div className="grid grid-cols-2 gap-3"><div className="space-y-1"><Label className="text-xs text-[#71767b]">Tên TVV</Label><Input placeholder="Nguyễn Văn A" value={newContract.agentName} onChange={(e) => setNewContract({ ...newContract, agentName: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Chức vụ</Label><Select value={newContract.position} onValueChange={(v) => setNewContract({ ...newContract, position: v })}><SelectTrigger className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]"><SelectValue placeholder="Chọn" /></SelectTrigger><SelectContent><SelectItem value="Tư vấn tài chính">TVV</SelectItem><SelectItem value="Trưởng nhóm">Trưởng nhóm</SelectItem><SelectItem value="Tiền trưởng nhóm">Tiền trưởng nhóm</SelectItem><SelectItem value="Trưởng ban">Trưởng ban</SelectItem></SelectContent></Select></div></div>
-            <div className="grid grid-cols-3 gap-3"><div className="space-y-1"><Label className="text-xs text-[#71767b]">Ban</Label><Input value={newContract.ban} onChange={(e) => setNewContract({ ...newContract, ban: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Nhóm</Label><Input value={newContract.nhom} onChange={(e) => setNewContract({ ...newContract, nhom: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Mã nhóm</Label><Input value={newContract.maNhom} onChange={(e) => setNewContract({ ...newContract, maNhom: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div></div>
-            <div className="grid grid-cols-2 gap-3"><div className="space-y-1"><Label className="text-xs text-[#71767b]">Mã NYD tuyển dụng</Label><Input placeholder="Mã đại lý tuyển dụng" value={newContract.recruiterCode} onChange={(e) => setNewContract({ ...newContract, recruiterCode: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Ngày bắt đầu LV</Label><Input type="date" value={newContract.startDate} onChange={(e) => setNewContract({ ...newContract, startDate: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div></div>
-            <div className="grid grid-cols-2 gap-3"><div className="space-y-1"><Label className="text-xs text-[#71767b]">Ngày hiệu lực</Label><Input type="date" value={newContract.effectiveDate} onChange={(e) => setNewContract({ ...newContract, effectiveDate: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Ngày phát hành</Label><Input type="date" value={newContract.issueDate} onChange={(e) => setNewContract({ ...newContract, issueDate: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div></div>
-            <div className="grid grid-cols-3 gap-3"><div className="space-y-1"><Label className="text-xs text-[#71767b]">IP (VNĐ)</Label><Input type="number" value={newContract.fyp} onChange={(e) => setNewContract({ ...newContract, fyp: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">AFYP (VNĐ)</Label><Input type="number" value={newContract.afyp} onChange={(e) => setNewContract({ ...newContract, afyp: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Tính Lượt</Label><Input type="number" value={newContract.tinhLuot} onChange={(e) => setNewContract({ ...newContract, tinhLuot: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div></div>
+            <div className="grid grid-cols-2 gap-3"><div className="space-y-1"><Label className="text-xs text-[#71767b]">Số HĐ</Label><Input placeholder="10000017624818" value={newContract.contractNumber} onChange={(e) => setNewContract({ ...newContract, contractNumber: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea] neon-input" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Mã đại lý</Label><Input placeholder="D104142435" value={newContract.agentCode} onChange={(e) => setNewContract({ ...newContract, agentCode: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea] neon-input" /></div></div>
+            <div className="grid grid-cols-2 gap-3"><div className="space-y-1"><Label className="text-xs text-[#71767b]">Tên TVV</Label><Input placeholder="Nguyễn Văn A" value={newContract.agentName} onChange={(e) => setNewContract({ ...newContract, agentName: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea] neon-input" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Chức vụ</Label><Select value={newContract.position} onValueChange={(v) => setNewContract({ ...newContract, position: v })}><SelectTrigger className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea] neon-input"><SelectValue placeholder="Chọn" /></SelectTrigger><SelectContent><SelectItem value="Tư vấn tài chính">TVV</SelectItem><SelectItem value="Trưởng nhóm">Trưởng nhóm</SelectItem><SelectItem value="Tiền trưởng nhóm">Tiền trưởng nhóm</SelectItem><SelectItem value="Trưởng ban">Trưởng ban</SelectItem></SelectContent></Select></div></div>
+            <div className="grid grid-cols-3 gap-3"><div className="space-y-1"><Label className="text-xs text-[#71767b]">Ban</Label><Input value={newContract.ban} onChange={(e) => setNewContract({ ...newContract, ban: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea] neon-input" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Nhóm</Label><Input value={newContract.nhom} onChange={(e) => setNewContract({ ...newContract, nhom: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea] neon-input" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Mã nhóm</Label><Input value={newContract.maNhom} onChange={(e) => setNewContract({ ...newContract, maNhom: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea] neon-input" /></div></div>
+            <div className="grid grid-cols-2 gap-3"><div className="space-y-1"><Label className="text-xs text-[#71767b]">Mã NYD tuyển dụng</Label><Input placeholder="Mã đại lý tuyển dụng" value={newContract.recruiterCode} onChange={(e) => setNewContract({ ...newContract, recruiterCode: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea] neon-input" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Ngày bắt đầu LV</Label><Input type="date" value={newContract.startDate} onChange={(e) => setNewContract({ ...newContract, startDate: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea] neon-input" /></div></div>
+            <div className="grid grid-cols-2 gap-3"><div className="space-y-1"><Label className="text-xs text-[#71767b]">Ngày hiệu lực</Label><Input type="date" value={newContract.effectiveDate} onChange={(e) => setNewContract({ ...newContract, effectiveDate: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea] neon-input" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Ngày phát hành</Label><Input type="date" value={newContract.issueDate} onChange={(e) => setNewContract({ ...newContract, issueDate: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea] neon-input" /></div></div>
+            <div className="grid grid-cols-3 gap-3"><div className="space-y-1"><Label className="text-xs text-[#71767b]">IP (VNĐ)</Label><Input type="number" value={newContract.fyp} onChange={(e) => setNewContract({ ...newContract, fyp: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea] neon-input" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">AFYP (VNĐ)</Label><Input type="number" value={newContract.afyp} onChange={(e) => setNewContract({ ...newContract, afyp: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea] neon-input" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Tính Lượt</Label><Input type="number" value={newContract.tinhLuot} onChange={(e) => setNewContract({ ...newContract, tinhLuot: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea] neon-input" /></div></div>
           </div>
-          <DialogFooter><Button variant="outline" onClick={() => setIsAddDialogOpen(false)} className="h-8">Hủy</Button><Button onClick={handleCreateContract} className="bg-[#00c853] hover:bg-[#00c853]/90 h-8">Tạo hợp đồng</Button></DialogFooter>
+          <DialogFooter><Button variant="outline" onClick={() => setIsAddDialogOpen(false)} className="h-8">Hủy</Button><Button onClick={handleCreateContract} className="bg-[#00c853] hover:bg-[#00c853]/90 h-8 neon-btn-primary">Tạo hợp đồng</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </div>

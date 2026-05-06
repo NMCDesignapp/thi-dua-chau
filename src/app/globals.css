@@ -120,3 +120,214 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ─── Neon Glow Effects ──────────────────────────────────────────────────── */
+
+@keyframes neon-pulse {
+  0%, 100% { box-shadow: 0 0 5px rgba(0,200,83,0.3), 0 0 15px rgba(0,200,83,0.15); }
+  50% { box-shadow: 0 0 10px rgba(0,200,83,0.5), 0 0 30px rgba(0,200,83,0.25), 0 0 50px rgba(0,200,83,0.1); }
+}
+
+@keyframes neon-pulse-amber {
+  0%, 100% { box-shadow: 0 0 5px rgba(245,158,11,0.3), 0 0 15px rgba(245,158,11,0.15); }
+  50% { box-shadow: 0 0 10px rgba(245,158,11,0.5), 0 0 30px rgba(245,158,11,0.25), 0 0 50px rgba(245,158,11,0.1); }
+}
+
+@keyframes neon-pulse-violet {
+  0%, 100% { box-shadow: 0 0 5px rgba(139,92,246,0.3), 0 0 15px rgba(139,92,246,0.15); }
+  50% { box-shadow: 0 0 10px rgba(139,92,246,0.5), 0 0 30px rgba(139,92,246,0.25), 0 0 50px rgba(139,92,246,0.1); }
+}
+
+@keyframes neon-pulse-blue {
+  0%, 100% { box-shadow: 0 0 5px rgba(59,130,246,0.3), 0 0 15px rgba(59,130,246,0.15); }
+  50% { box-shadow: 0 0 10px rgba(59,130,246,0.5), 0 0 30px rgba(59,130,246,0.25), 0 0 50px rgba(59,130,246,0.1); }
+}
+
+@keyframes neon-line-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes neon-border-flow {
+  0% { --neon-angle: 0deg; }
+  100% { --neon-angle: 360deg; }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes glow-text {
+  0%, 100% { text-shadow: 0 0 4px rgba(0,200,83,0.4), 0 0 8px rgba(0,200,83,0.2); }
+  50% { text-shadow: 0 0 8px rgba(0,200,83,0.6), 0 0 16px rgba(0,200,83,0.3), 0 0 24px rgba(0,200,83,0.15); }
+}
+
+/* Neon card - green border glow */
+.neon-card {
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.neon-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(0,200,83,0.3), rgba(0,200,83,0.05), rgba(0,200,83,0.3));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.neon-card:hover::before {
+  opacity: 1;
+}
+.neon-card:hover {
+  box-shadow: 0 0 15px rgba(0,200,83,0.08), 0 4px 20px rgba(0,0,0,0.3);
+  transform: translateY(-1px);
+}
+
+/* Neon card amber */
+.neon-card-amber::before {
+  background: linear-gradient(135deg, rgba(245,158,11,0.4), rgba(245,158,11,0.05), rgba(245,158,11,0.4));
+}
+.neon-card-amber:hover {
+  box-shadow: 0 0 15px rgba(245,158,11,0.08), 0 4px 20px rgba(0,0,0,0.3);
+}
+
+/* Neon card violet */
+.neon-card-violet::before {
+  background: linear-gradient(135deg, rgba(139,92,246,0.4), rgba(139,92,246,0.05), rgba(139,92,246,0.4));
+}
+.neon-card-violet:hover {
+  box-shadow: 0 0 15px rgba(139,92,246,0.08), 0 4px 20px rgba(0,0,0,0.3);
+}
+
+/* Neon step circle */
+.neon-step {
+  animation: neon-pulse 2.5s ease-in-out infinite;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.neon-step-amber {
+  animation: neon-pulse-amber 2.5s ease-in-out infinite;
+}
+.neon-step-violet {
+  animation: neon-pulse-violet 2.5s ease-in-out infinite;
+}
+
+/* Neon button primary */
+.neon-btn-primary {
+  animation: neon-pulse 2.5s ease-in-out infinite;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.neon-btn-primary:hover {
+  animation: neon-pulse 1.2s ease-in-out infinite;
+  transform: translateY(-1px);
+}
+.neon-btn-primary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Neon input focus */
+.neon-input {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.neon-input:focus {
+  box-shadow: 0 0 0 2px rgba(0,200,83,0.15), 0 0 12px rgba(0,200,83,0.1) !important;
+  border-color: rgba(0,200,83,0.5) !important;
+}
+
+/* Neon chip button */
+.neon-chip {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.neon-chip:hover {
+  transform: translateY(-1px) scale(1.05);
+}
+.neon-chip:active {
+  transform: scale(0.95);
+}
+
+/* Neon line separator */
+.neon-line {
+  position: relative;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,200,83,0.3), rgba(0,200,83,0.5), rgba(0,200,83,0.3), transparent);
+  background-size: 200% 100%;
+  animation: neon-line-flow 4s ease-in-out infinite;
+}
+
+/* Neon header bottom line */
+.neon-header-line {
+  position: relative;
+}
+.neon-header-line::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0,200,83,0.6), rgba(0,200,83,0.9), rgba(0,200,83,0.6), transparent);
+  background-size: 200% 100%;
+  animation: neon-line-flow 3s ease-in-out infinite;
+}
+
+/* Fade-in animation for cards */
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Neon toggle button */
+.neon-toggle {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.neon-toggle:hover {
+  transform: translateY(-1px);
+}
+
+/* Neon text glow */
+.neon-text-glow {
+  animation: glow-text 3s ease-in-out infinite;
+}
+
+/* Smooth scrollbar */
+.neon-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.neon-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.1);
+  border-radius: 3px;
+}
+.neon-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0,200,83,0.3);
+  border-radius: 3px;
+  transition: background 0.3s;
+}
+.neon-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,200,83,0.5);
+}
+
+/* Neon progress bar glow */
+.neon-progress {
+  box-shadow: 0 0 8px rgba(0,200,83,0.4), 0 0 16px rgba(0,200,83,0.2);
+}
+
+/* Neon tier card */
+.neon-tier-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.neon-tier-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 10px rgba(0,200,83,0.08);
+}
