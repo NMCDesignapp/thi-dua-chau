@@ -729,7 +729,7 @@ export default function Home() {
 
   // ─── TVV rows helper: aggregate by agent or per-contract ─────────────────
 
-  const tvvRows: { agentCode: string; agentName: string; nhom: string; position: string; totalFYP: number; tinhLuot: number; contractCount: number; contractNumber?: string; fyp?: number; contractId?: string }[] = (() => {
+  const tvvRows: { agentCode: string; agentName: string; nhom: string; position: string; totalFYP: number; tinhLuot: number; contractCount: number; contractNumber?: string; effectiveDate?: string; fyp?: number; contractId?: string }[] = (() => {
     if (targetType !== 'tvv') return [];
 
     if (conditionType === 'per_contract') {
@@ -743,6 +743,7 @@ export default function Home() {
         tinhLuot: c.tinhLuot,
         contractCount: 1,
         contractNumber: c.contractNumber,
+        effectiveDate: c.effectiveDate,
         fyp: c.fyp,
         contractId: c.id,
       }));
@@ -846,7 +847,7 @@ export default function Home() {
       tvvRows.forEach((row, idx) => {
         const metricLabel = conditionType === 'per_contract' ? 'IP' : conditionType === 'total_fyp' ? 'Tổng IP' : isActivityRoundMode(conditionType) ? 'Lượt HĐ' : 'IP';
         const metricValue = conditionType === 'per_contract' ? formatNumber(row.totalFYP) : conditionType === 'total_fyp' ? formatNumber(row.totalFYP) : isActivityRoundMode(conditionType) ? `${row.tinhLuot >= 3000000 ? 1 : 0} lượt` : formatNumber(row.totalFYP);
-        const soHD = conditionType === 'per_contract' ? ` | Số HĐ: ${row.contractNumber}` : '';
+        const soHD = conditionType === 'per_contract' ? ` | Số HĐ: ${row.contractNumber}${row.effectiveDate ? ` | Ngày HL: ${formatDate(row.effectiveDate)}` : ''}` : '';
         const tier = conditionType === 'per_contract' ? calculateBonus(row.totalFYP).tier : calculateBonus(row.totalFYP).tier;
         text += `${idx + 1}. ${row.nhom} | ${row.agentCode} | ${row.agentName} | ${row.position}${soHD} | ${metricLabel}: ${metricValue} | ${tier ? `Thưởng: ${formatBonus(tier, row.totalFYP)}` : 'Chưa đạt'}\n`;
       });
@@ -906,13 +907,13 @@ export default function Home() {
     } else {
       // TVV
       const isPerContract = conditionType === 'per_contract';
-      headers = ['STT', 'Nhóm', 'Mã Số', 'Họ Tên', 'Chức Vụ', ...(isPerContract ? ['Số HĐ'] : []), isPerContract ? 'IP' : conditionType === 'total_fyp' ? 'TỔNG IP' : 'IP', ...(hasP2 ? ['Thưởng GĐ1', 'Thưởng GĐ2'] : []), hasP2 ? 'Tổng Thưởng' : 'Tiền Thưởng', 'Ghi chú'];
+      headers = ['STT', 'Nhóm', 'Mã Số', 'Họ Tên', 'Chức Vụ', ...(isPerContract ? ['Số HĐ', 'Ngày HL'] : []), isPerContract ? 'IP' : conditionType === 'total_fyp' ? 'TỔNG IP' : 'IP', ...(hasP2 ? ['Thưởng GĐ1', 'Thưởng GĐ2'] : []), hasP2 ? 'Tổng Thưởng' : 'Tiền Thưởng', 'Ghi chú'];
       rows = tvvRows.map((row) => {
         const tier = calculateBonus(row.totalFYP).tier;
         return { row, tier };
       }).sort((a, b) => (b.tier?.bonusAmount || 0) - (a.tier?.bonusAmount || 0)).map(({ row, tier }, idx) => {
         const base: (string | number)[] = [idx + 1, row.nhom, row.agentCode, row.agentName, row.position];
-        if (isPerContract) base.push(row.contractNumber || '');
+        if (isPerContract) { base.push(row.contractNumber || ''); base.push(row.effectiveDate ? formatDate(row.effectiveDate) : ''); }
         base.push(row.totalFYP);
         if (hasP2) {
           if (isPerContract) {
@@ -992,13 +993,13 @@ export default function Home() {
     } else {
       // TVV
       const isPerContract = conditionType === 'per_contract';
-      headers = ['STT', 'Nhóm', 'Mã Số', 'Họ Tên', 'Chức Vụ', ...(isPerContract ? ['Số HĐ'] : []), isPerContract ? 'IP' : conditionType === 'total_fyp' ? 'TỔNG IP' : 'IP', ...(hasP2 ? ['Thưởng GĐ1', 'Thưởng GĐ2'] : []), hasP2 ? 'Tổng Thưởng' : 'Tiền Thưởng', 'Ghi chú'];
+      headers = ['STT', 'Nhóm', 'Mã Số', 'Họ Tên', 'Chức Vụ', ...(isPerContract ? ['Số HĐ', 'Ngày HL'] : []), isPerContract ? 'IP' : conditionType === 'total_fyp' ? 'TỔNG IP' : 'IP', ...(hasP2 ? ['Thưởng GĐ1', 'Thưởng GĐ2'] : []), hasP2 ? 'Tổng Thưởng' : 'Tiền Thưởng', 'Ghi chú'];
       rows = tvvRows.map((row) => {
         const tier = calculateBonus(row.totalFYP).tier;
         return { row, tier };
       }).sort((a, b) => (b.tier?.bonusAmount || 0) - (a.tier?.bonusAmount || 0)).map(({ row, tier }, idx) => {
         const base: (string | number)[] = [idx + 1, row.nhom, row.agentCode, row.agentName, row.position];
-        if (isPerContract) base.push(row.contractNumber || '');
+        if (isPerContract) { base.push(row.contractNumber || ''); base.push(row.effectiveDate ? formatDate(row.effectiveDate) : ''); }
         base.push(row.totalFYP);
         if (hasP2) {
           if (isPerContract) {
@@ -1806,6 +1807,9 @@ export default function Home() {
                                 {conditionType === 'per_contract' && (
                                   <th className="text-[12px] font-bold text-white text-center py-2.5 px-3 whitespace-nowrap uppercase border-b-2 border-emerald-400 shadow-sm">Số HĐ</th>
                                 )}
+                                {conditionType === 'per_contract' && (
+                                  <th className="text-[12px] font-bold text-white text-center py-2.5 px-3 whitespace-nowrap uppercase border-b-2 border-emerald-400 shadow-sm">Ngày HL</th>
+                                )}
                               </>
                             )}
 
@@ -1901,11 +1905,9 @@ export default function Home() {
                                 <>
                                   <td className="text-[12px] text-center font-bold text-amber-700 py-2 px-2 whitespace-nowrap bg-amber-50/60">
                                     {tierP1 ? formatBonus(tierP1, group.contracts.filter(c => !isPhase2Contract(c)).reduce((s, c) => s + c.fyp, 0), isActivityRoundMode(conditionType) ? undefined : undefined) : <span className="text-gray-300">—</span>}
-                                    {bonusP1 > 0 && <span className="block text-[10px] text-amber-600">{formatCurrency(bonusP1)}</span>}
                                   </td>
                                   <td className="text-[12px] text-center font-bold text-blue-700 py-2 px-2 whitespace-nowrap bg-blue-50/60">
                                     {tierP2 ? formatBonus(tierP2, group.contracts.filter(c => isPhase2Contract(c)).reduce((s, c) => s + c.fyp, 0)) : <span className="text-gray-300">—</span>}
-                                    {bonusP2 > 0 && <span className="block text-[10px] text-blue-600">{formatCurrency(bonusP2)}</span>}
                                   </td>
                                   <td className="text-[14px] text-center font-bold text-emerald-700 py-2 px-3 whitespace-nowrap bg-emerald-50/40">
                                     {totalBonus > 0 ? <span className="inline-flex items-center gap-1"><Banknote className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />{formatCurrency(totalBonus)}</span> : <span className="text-gray-300">—</span>}
@@ -1977,11 +1979,9 @@ export default function Home() {
                                 <>
                                   <td className="text-[12px] text-center font-bold text-amber-700 py-2 px-2 whitespace-nowrap bg-amber-50/60">
                                     {tierP1 ? formatBonus(tierP1) : <span className="text-gray-300">—</span>}
-                                    {bonusP1 > 0 && <span className="block text-[10px] text-amber-600">{formatCurrency(bonusP1)}</span>}
                                   </td>
                                   <td className="text-[12px] text-center font-bold text-blue-700 py-2 px-2 whitespace-nowrap bg-blue-50/60">
                                     {tierP2 ? formatBonus(tierP2) : <span className="text-gray-300">—</span>}
-                                    {bonusP2 > 0 && <span className="block text-[10px] text-blue-600">{formatCurrency(bonusP2)}</span>}
                                   </td>
                                   <td className="text-[14px] text-center font-bold text-emerald-700 py-2 px-3 whitespace-nowrap bg-emerald-50/40">
                                     {totalBonus > 0 ? <span className="inline-flex items-center gap-1"><Banknote className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />{formatCurrency(totalBonus)}</span> : <span className="text-gray-300">—</span>}
@@ -2051,6 +2051,9 @@ export default function Home() {
                               {conditionType === 'per_contract' && (
                                 <td className="text-[12px] text-center text-black font-medium py-2 px-3 whitespace-nowrap">{row.contractNumber || ''}</td>
                               )}
+                              {conditionType === 'per_contract' && (
+                                <td className="text-[12px] text-center text-black font-medium py-2 px-3 whitespace-nowrap">{row.effectiveDate ? formatDate(row.effectiveDate) : ''}</td>
+                              )}
                               <td className="text-[12px] text-center font-bold text-blue-700 py-2 px-3 whitespace-nowrap">
                                 {isActivityRoundMode(conditionType)
                                   ? `${Math.max(row.tinhLuot, 0) >= (conditionType === 'activity_round_standard' ? 12000000 : 3000000) ? 1 : 0} lượt`
@@ -2060,11 +2063,9 @@ export default function Home() {
                                 <>
                                   <td className="text-[12px] text-center font-bold text-amber-700 py-2 px-2 whitespace-nowrap bg-amber-50/60">
                                     {tierP1 ? formatBonus(tierP1) : <span className="text-gray-300">—</span>}
-                                    {bonusP1 > 0 && <span className="block text-[10px] text-amber-600">{formatCurrency(bonusP1)}</span>}
                                   </td>
                                   <td className="text-[12px] text-center font-bold text-blue-700 py-2 px-2 whitespace-nowrap bg-blue-50/60">
                                     {tierP2 ? formatBonus(tierP2) : <span className="text-gray-300">—</span>}
-                                    {bonusP2 > 0 && <span className="block text-[10px] text-blue-600">{formatCurrency(bonusP2)}</span>}
                                   </td>
                                   <td className="text-[14px] text-center font-bold text-emerald-700 py-2 px-3 whitespace-nowrap bg-emerald-50/40">
                                     {totalBonus > 0 ? <span className="inline-flex items-center gap-1"><Banknote className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />{formatCurrency(totalBonus)}</span> : <span className="text-gray-300">—</span>}
