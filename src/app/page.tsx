@@ -1315,19 +1315,19 @@ export default function Home() {
   // ─── Render ───────────────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+    <div className="min-h-screen bg-[#0f1419]">
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b border-[#2f3640] bg-[#0f1419]/95 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-5xl mx-auto px-3 py-2.5 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-9 h-9 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center"><Trophy className="w-4 h-4 text-white" /></div>
-            <div><h1 className="text-base font-bold text-gray-900">Tính Thưởng Thi Đua</h1><p className="text-[10px] text-gray-500">Quản lý & tính thưởng IP</p></div>
+            <div><h1 className="text-base font-bold text-[#e7e9ea]">Tính Thưởng Thi Đua</h1><p className="text-[10px] text-[#71767b]">Quản lý & tính thưởng IP</p></div>
           </div>
           <div className="flex items-center gap-1.5">
-            <Button variant="outline" size="sm" className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 h-8 text-xs" onClick={() => setIsImportDialogOpen(true)}>
+            <Button variant="outline" size="sm" className="border-[#00c853] text-[#00c853] hover:bg-[#00c853]/10 h-8 text-xs" onClick={() => setIsImportDialogOpen(true)}>
               <Link className="w-3.5 h-3.5 mr-1" /> Nhập Google Sheets
             </Button>
-            <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 h-8 text-xs" onClick={() => setIsAddDialogOpen(true)}>
+            <Button size="sm" className="bg-[#00c853] hover:bg-[#00c853]/90 h-8 text-xs" onClick={() => setIsAddDialogOpen(true)}>
               <Plus className="w-3.5 h-3.5 mr-1" /> Thêm HĐ
             </Button>
           </div>
@@ -1336,38 +1336,38 @@ export default function Home() {
 
       <main className="max-w-5xl mx-auto px-3 py-4 space-y-4">
         {/* STEP 1: Info */}
-        <Card className="border-emerald-200 shadow-sm">
+        <Card className="border-[#2f3640] shadow-sm bg-[#1a1f26]">
           <CardHeader className="pb-2 pt-4 px-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center text-sm font-bold">1</div>
-                <CardTitle className="text-sm">Thông tin chương trình</CardTitle>
+                <div className="w-7 h-7 rounded-full bg-[#00c853] text-white flex items-center justify-center text-sm font-bold">1</div>
+                <CardTitle className="text-sm text-[#e7e9ea]">Thông tin chương trình</CardTitle>
               </div>
               <div className="flex items-center gap-1.5">
                 <Select value={selectedContestId} onValueChange={handleLoadContest}>
-                  <SelectTrigger className="w-[180px] h-7 text-xs"><BookmarkPlus className="w-3 h-3 mr-1 text-emerald-600" /><SelectValue placeholder="Chương trình đã lưu..." /></SelectTrigger>
+                  <SelectTrigger className="w-[180px] h-7 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]"><BookmarkPlus className="w-3 h-3 mr-1 text-[#00c853]" /><SelectValue placeholder="Chương trình đã lưu..." /></SelectTrigger>
                   <SelectContent>{savedContests.length === 0 ? <SelectItem value="_none" disabled>Chưa có</SelectItem> : savedContests.map((sc) => (<SelectItem key={sc.id} value={sc.id}><div className="flex items-center gap-2"><span className="truncate">{sc.title}</span><Button variant="ghost" size="sm" className="h-4 w-4 p-0 text-red-400 hover:text-red-600" onClick={(e) => handleDeleteContest(sc.id, e)}><Trash2 className="w-2.5 h-2.5" /></Button></div></SelectItem>))}</SelectContent>
                 </Select>
-                <Button variant="outline" size="sm" onClick={handleSaveContest} disabled={isSaving} className="border-amber-300 text-amber-700 hover:bg-amber-50 h-7 text-xs">{isSaving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3 mr-1" />}Lưu</Button>
+                <Button variant="outline" size="sm" onClick={handleSaveContest} disabled={isSaving} className="border-[#00c853] text-[#00c853] hover:bg-[#00c853]/10 h-7 text-xs">{isSaving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3 mr-1" />}Lưu</Button>
               </div>
             </div>
           </CardHeader>
           <CardContent className="px-4 pb-4 space-y-3">
             <div className="space-y-2">
-              <Label className="text-xs font-medium">Tên chương trình thi đua</Label>
-              <Input value={contestTitle} onChange={(e) => setContestTitle(e.target.value)} className="font-semibold border-emerald-200 h-9 text-sm" />
+              <Label className="text-xs font-medium text-[#e7e9ea]">Tên chương trình thi đua</Label>
+              <Input value={contestTitle} onChange={(e) => setContestTitle(e.target.value)} className="font-semibold border-[#2f3640] h-9 text-sm bg-[#252d37] text-[#e7e9ea]" />
             </div>
             <div className="grid grid-cols-3 gap-2">
-              <div className="space-y-1"><Label className="text-xs">Hiệu lực từ</Label><Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="h-8 text-xs border-emerald-200" /></div>
-              <div className="space-y-1"><Label className="text-xs">Hiệu lực đến</Label><Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="h-8 text-xs border-emerald-200" /></div>
-              <div className="space-y-1"><Label className="text-xs">Ngày phát hành</Label><Input type="date" value={issueDate} onChange={(e) => setIssueDate(e.target.value)} className="h-8 text-xs border-emerald-200" /></div>
+              <div className="space-y-1"><Label className="text-xs text-[#71767b]">Hiệu lực từ</Label><Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="h-8 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
+              <div className="space-y-1"><Label className="text-xs text-[#71767b]">Hiệu lực đến</Label><Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="h-8 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
+              <div className="space-y-1"><Label className="text-xs text-[#71767b]">Ngày phát hành</Label><Input type="date" value={issueDate} onChange={(e) => setIssueDate(e.target.value)} className="h-8 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
             </div>
             {/* Phase 2 toggle */}
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => setUsePhase2(!usePhase2)}
-                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all ${usePhase2 ? 'bg-blue-100 border-blue-300 text-blue-700' : 'bg-gray-50 border-gray-200 text-gray-500 hover:bg-gray-100'}`}
+                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all ${usePhase2 ? 'bg-blue-500/20 border-blue-400/50 text-blue-300' : 'bg-[#252d37] border-[#2f3640] text-[#71767b] hover:bg-[#252d37]/80'}`}
               >
                 <Layers className="w-3 h-3" />
                 Giai đoạn 2
@@ -1377,23 +1377,23 @@ export default function Home() {
               )}
             </div>
             {usePhase2 && (
-              <div className="rounded-lg border border-blue-200 bg-blue-50/50 p-2.5 space-y-2">
+              <div className="rounded-lg border border-[#2f3640] bg-[#252d37]/50 p-2.5 space-y-2">
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="space-y-1"><Label className="text-[10px] text-blue-700">GĐ2 bắt đầu</Label><Input type="date" value={phase2StartDate} onChange={(e) => setPhase2StartDate(e.target.value)} className="h-7 text-xs border-blue-200" /></div>
-                  <div className="space-y-1"><Label className="text-[10px] text-blue-700">GĐ2 kết thúc</Label><Input type="date" value={phase2EndDate} onChange={(e) => setPhase2EndDate(e.target.value)} className="h-7 text-xs border-blue-200" /></div>
+                  <div className="space-y-1"><Label className="text-[10px] text-blue-300">GĐ2 bắt đầu</Label><Input type="date" value={phase2StartDate} onChange={(e) => setPhase2StartDate(e.target.value)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
+                  <div className="space-y-1"><Label className="text-[10px] text-blue-300">GĐ2 kết thúc</Label><Input type="date" value={phase2EndDate} onChange={(e) => setPhase2EndDate(e.target.value)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
                 </div>
-                <p className="text-[10px] text-blue-600">HĐ hiệu lực trong GĐ2 sẽ tính thưởng theo tỷ lệ GĐ2</p>
+                <p className="text-[10px] text-blue-400">HĐ hiệu lực trong GĐ2 sẽ tính thưởng theo tỷ lệ GĐ2</p>
               </div>
             )}
           </CardContent>
         </Card>
 
         {/* STEP 2: Config */}
-        <Card className="border-amber-200 shadow-sm">
+        <Card className="border-[#2f3640] shadow-sm bg-[#1a1f26]">
           <CardHeader className="pb-2 pt-4 px-4">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-full bg-amber-500 text-white flex items-center justify-center text-sm font-bold">2</div>
-              <CardTitle className="text-sm">Cấu hình thi đua & Thưởng</CardTitle>
+              <CardTitle className="text-sm text-[#e7e9ea]">Cấu hình thi đua & Thưởng</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="px-4 pb-4 space-y-3">
@@ -1401,12 +1401,12 @@ export default function Home() {
             <div className="space-y-3">
               {/* Đối tượng */}
               <div>
-                <Label className="text-[10px] uppercase tracking-wider font-semibold text-gray-500 mb-1.5 block">Đối tượng</Label>
+                <Label className="text-[10px] uppercase tracking-wider font-semibold text-[#71767b] mb-1.5 block">Đối tượng</Label>
                 <div className="flex flex-wrap gap-1.5">
                   {([
-                    { value: 'tvv' as TargetType, label: 'TVV', icon: Users, activeCls: 'bg-emerald-500 text-white shadow-emerald-200 shadow-md', inactiveCls: 'bg-emerald-50 text-emerald-700 border border-emerald-200', disabled: isActivityRoundMode(conditionType) && targetType !== 'nhom' },
-                    { value: 'nhom' as TargetType, label: 'Nhóm', icon: UserCheck, activeCls: 'bg-sky-500 text-white shadow-sky-200 shadow-md', inactiveCls: 'bg-sky-50 text-sky-700 border border-sky-200', disabled: isActivityRoundMode(conditionType) && targetType !== 'nhom' },
-                    { value: 'nyd' as TargetType, label: 'NYD', icon: UserCog, activeCls: 'bg-violet-500 text-white shadow-violet-200 shadow-md', inactiveCls: 'bg-violet-50 text-violet-700 border border-violet-200', disabled: false },
+                    { value: 'tvv' as TargetType, label: 'TVV', icon: Users, activeCls: 'bg-emerald-500 text-white shadow-emerald-200 shadow-md', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]', disabled: isActivityRoundMode(conditionType) && targetType !== 'nhom' },
+                    { value: 'nhom' as TargetType, label: 'Nhóm', icon: UserCheck, activeCls: 'bg-sky-500 text-white shadow-sky-200 shadow-md', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]', disabled: isActivityRoundMode(conditionType) && targetType !== 'nhom' },
+                    { value: 'nyd' as TargetType, label: 'NYD', icon: UserCog, activeCls: 'bg-violet-500 text-white shadow-violet-200 shadow-md', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]', disabled: false },
                   ]).map(({ value, label, icon: Icon, activeCls, inactiveCls, disabled }) => (
                     <button
                       key={value}
@@ -1440,12 +1440,12 @@ export default function Home() {
 
               {/* Điều kiện */}
               <div>
-                <Label className="text-[10px] uppercase tracking-wider font-semibold text-gray-500 mb-1.5 block">Điều kiện</Label>
+                <Label className="text-[10px] uppercase tracking-wider font-semibold text-[#71767b] mb-1.5 block">Điều kiện</Label>
                 {targetType === 'nyd' ? (
                   <div className="flex flex-wrap gap-1.5">
                     {([
-                      { value: 'nyd_activity' as ConditionType, label: 'Lượt TVVm HĐ', activeCls: 'bg-violet-500 text-white shadow-violet-200 shadow-md', inactiveCls: 'bg-violet-50 text-violet-700 border border-violet-200' },
-                      { value: 'nyd_fyp' as ConditionType, label: 'FYP TVVm', activeCls: 'bg-violet-500 text-white shadow-violet-200 shadow-md', inactiveCls: 'bg-violet-50 text-violet-700 border border-violet-200' },
+                      { value: 'nyd_activity' as ConditionType, label: 'Lượt TVVm HĐ', activeCls: 'bg-violet-500 text-white shadow-violet-200 shadow-md', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]' },
+                      { value: 'nyd_fyp' as ConditionType, label: 'FYP TVVm', activeCls: 'bg-violet-500 text-white shadow-violet-200 shadow-md', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]' },
                     ]).map(({ value, label, activeCls, inactiveCls }) => (
                       <button
                         key={value}
@@ -1466,10 +1466,10 @@ export default function Home() {
                 ) : (
                   <div className="flex flex-wrap gap-1.5">
                     {([
-                      { value: 'per_contract' as ConditionType, label: 'Theo HĐ', icon: FileText, activeCls: 'bg-amber-500 text-white shadow-amber-200 shadow-md', inactiveCls: 'bg-amber-50 text-amber-700 border border-amber-200' },
-                      { value: 'total_fyp' as ConditionType, label: 'Tổng IP', icon: TrendingUp, activeCls: 'bg-amber-500 text-white shadow-amber-200 shadow-md', inactiveCls: 'bg-amber-50 text-amber-700 border border-amber-200' },
-                      { value: 'activity_round' as ConditionType, label: 'Lượt HĐ', sublabel: '≥3tr', icon: Zap, activeCls: 'bg-orange-500 text-white shadow-orange-200 shadow-md', inactiveCls: 'bg-orange-50 text-orange-700 border border-orange-200' },
-                      { value: 'activity_round_standard' as ConditionType, label: 'Lượt Chuẩn', sublabel: '≥12tr', icon: Zap, activeCls: 'bg-orange-500 text-white shadow-orange-200 shadow-md', inactiveCls: 'bg-orange-50 text-orange-700 border border-orange-200' },
+                      { value: 'per_contract' as ConditionType, label: 'Theo HĐ', icon: FileText, activeCls: 'bg-amber-500 text-white shadow-amber-200 shadow-md', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]' },
+                      { value: 'total_fyp' as ConditionType, label: 'Tổng IP', icon: TrendingUp, activeCls: 'bg-amber-500 text-white shadow-amber-200 shadow-md', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]' },
+                      { value: 'activity_round' as ConditionType, label: 'Lượt HĐ', sublabel: '≥3tr', icon: Zap, activeCls: 'bg-orange-500 text-white shadow-orange-200 shadow-md', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]' },
+                      { value: 'activity_round_standard' as ConditionType, label: 'Lượt Chuẩn', sublabel: '≥12tr', icon: Zap, activeCls: 'bg-orange-500 text-white shadow-orange-200 shadow-md', inactiveCls: 'bg-[#252d37] text-[#71767b] border border-[#2f3640]' },
                     ]).map(({ value, label, sublabel, icon: Icon, activeCls, inactiveCls }) => (
                       <button
                         key={value}
@@ -1520,17 +1520,17 @@ export default function Home() {
 
             {/* Include NYD own data toggle */}
             {targetType === 'nyd' && (
-              <div className="flex items-center space-x-2 rounded-lg border border-violet-200 bg-violet-50/50 p-2">
+              <div className="flex items-center space-x-2 rounded-lg border border-[#2f3640] bg-[#252d37]/50 p-2">
                 <Checkbox id="includeOwn" checked={includeOwnNYD} onCheckedChange={(v) => setIncludeOwnNYD(v === true)} />
-                <Label htmlFor="includeOwn" className="cursor-pointer text-xs font-medium text-violet-800">Tính luôn cá nhân NYD (FYP + hoạt động riêng)</Label>
+                <Label htmlFor="includeOwn" className="cursor-pointer text-xs font-medium text-violet-300">Tính luôn cá nhân NYD (FYP + hoạt động riêng)</Label>
               </div>
             )}
 
             {/* TVVm filter toggle */}
             {(targetType === 'tvv' || targetType === 'nhom') && isActivityRoundMode(conditionType) && (
-              <div className="flex items-center space-x-2 rounded-lg border border-orange-200 bg-orange-50/50 p-2">
+              <div className="flex items-center space-x-2 rounded-lg border border-[#2f3640] bg-[#252d37]/50 p-2">
                 <Checkbox id="useTVVm" checked={useTVVm} onCheckedChange={(v) => setUseTVVm(v === true)} />
-                <Label htmlFor="useTVVm" className="cursor-pointer text-xs font-medium text-orange-800">Chỉ tính TVVm (TVV mới ≤ 12 tháng)</Label>
+                <Label htmlFor="useTVVm" className="cursor-pointer text-xs font-medium text-orange-300">Chỉ tính TVVm (TVV mới ≤ 12 tháng)</Label>
               </div>
             )}
 
@@ -1539,38 +1539,38 @@ export default function Home() {
               <button
                 type="button"
                 onClick={() => setUseSecondaryCondition(!useSecondaryCondition)}
-                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all ${useSecondaryCondition ? 'bg-teal-100 border-teal-300 text-teal-700' : 'bg-gray-50 border-gray-200 text-gray-500 hover:bg-gray-100'}`}
+                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all ${useSecondaryCondition ? 'bg-teal-500/20 border-teal-400/50 text-teal-300' : 'bg-[#252d37] border-[#2f3640] text-[#71767b] hover:bg-[#252d37]/80'}`}
               >
                 <Shield className="w-3 h-3" />
                 Điều kiện phụ
               </button>
               {useSecondaryCondition && (secondaryAFYPMin > 0 || secondaryIPMin > 0) && (
-                <span className="text-[10px] text-teal-600">AFYP ≥ {formatNumber(secondaryAFYPMin)}{secondaryIPMin > 0 ? `, IP ≥ ${formatNumber(secondaryIPMin)}` : ''}</span>
+                <span className="text-[10px] text-teal-400">AFYP ≥ {formatNumber(secondaryAFYPMin)}{secondaryIPMin > 0 ? `, IP ≥ ${formatNumber(secondaryIPMin)}` : ''}</span>
               )}
             </div>
             {useSecondaryCondition && (
-              <div className="rounded-lg border border-teal-200 bg-teal-50/50 p-2.5 space-y-2">
-                <p className="text-[10px] text-teal-700 font-medium">Chỉ tính HĐ thỏa mãn điều kiện phụ:</p>
+              <div className="rounded-lg border border-[#2f3640] bg-[#252d37]/50 p-2.5 space-y-2">
+                <p className="text-[10px] text-teal-300 font-medium">Chỉ tính HĐ thỏa mãn điều kiện phụ:</p>
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="space-y-1"><Label className="text-[10px] text-teal-700">AFYP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(secondaryAFYPMin) || ''} onChange={(e) => setSecondaryAFYPMin(nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-teal-200" /></div>
-                  <div className="space-y-1"><Label className="text-[10px] text-teal-700">IP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(secondaryIPMin) || ''} onChange={(e) => setSecondaryIPMin(nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-teal-200" /></div>
+                  <div className="space-y-1"><Label className="text-[10px] text-teal-300">AFYP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(secondaryAFYPMin) || ''} onChange={(e) => setSecondaryAFYPMin(nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
+                  <div className="space-y-1"><Label className="text-[10px] text-teal-300">IP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(secondaryIPMin) || ''} onChange={(e) => setSecondaryIPMin(nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
                 </div>
               </div>
             )}
 
-            <Separator />
+            <Separator className="bg-[#2f3640]" />
 
             {/* Bonus Tiers */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label className="text-xs font-medium">Bảng mức thưởng</Label>
-                <Button variant="ghost" size="sm" onClick={addBonusTier} className="text-amber-600 hover:text-amber-700 h-6 text-xs"><Plus className="w-3 h-3 mr-0.5" /> Thêm mức</Button>
+                <Label className="text-xs font-medium text-[#e7e9ea]">Bảng mức thưởng</Label>
+                <Button variant="ghost" size="sm" onClick={addBonusTier} className="text-amber-400 hover:text-amber-300 h-6 text-xs"><Plus className="w-3 h-3 mr-0.5" /> Thêm mức</Button>
               </div>
               <div className="space-y-2">
                 {bonusTiers.map((tier, index) => (
-                  <div key={tier.id} className="p-2 rounded-lg bg-amber-50/50 border border-amber-100">
+                  <div key={tier.id} className="p-2 rounded-lg bg-[#252d37]/50 border border-[#2f3640]">
                     <div className="flex items-center gap-1.5 mb-1.5">
-                      <span className="text-[10px] font-bold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded">Mức {index + 1}</span>
+                      <span className="text-[10px] font-bold text-amber-300 bg-amber-900/40 px-1.5 py-0.5 rounded">Mức {index + 1}</span>
                       <div className="flex items-center gap-0.5 ml-auto">
                         {([['money', 'Tiền', Banknote, 'bg-emerald-600'], ['money_per_round', 'Tiền×Lượt', Zap, 'bg-orange-600'], ['gift', 'Quà', Gift, 'bg-pink-600'], ['percent', '% IP', Percent, 'bg-violet-600']] as const).map(([type, label, Icon, activeCls]) => (
                           <Button key={type} variant={tier.bonusType === type ? 'default' : 'outline'} size="sm" className={`h-5 px-1.5 text-[9px] ${tier.bonusType === type ? activeCls + ' hover:opacity-90' : ''}`} onClick={() => updateBonusTier(tier.id, 'bonusType', type)}><Icon className="w-2.5 h-2.5 mr-0.5" />{label}</Button>
@@ -1581,20 +1581,20 @@ export default function Home() {
                     <div className="grid grid-cols-3 gap-1.5">
                       {isActivityRoundMode(conditionType) || conditionType === 'nyd_activity' ? (
                         <>
-                          <div><Label className="text-[9px] text-muted-foreground">Lượt từ</Label><Input type="number" placeholder="0" value={tier.minFYP || ''} onChange={(e) => updateBonusTier(tier.id, 'minFYP', parseInt(e.target.value) || 0)} className="h-7 text-xs border-amber-200" /></div>
-                          <div><Label className="text-[9px] text-muted-foreground">Lượt đến</Label><Input type="number" placeholder="∞" value={tier.maxFYP || ''} onChange={(e) => updateBonusTier(tier.id, 'maxFYP', e.target.value ? parseInt(e.target.value) : null)} className="h-7 text-xs border-amber-200" /></div>
+                          <div><Label className="text-[9px] text-muted-foreground">Lượt từ</Label><Input type="number" placeholder="0" value={tier.minFYP || ''} onChange={(e) => updateBonusTier(tier.id, 'minFYP', parseInt(e.target.value) || 0)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
+                          <div><Label className="text-[9px] text-muted-foreground">Lượt đến</Label><Input type="number" placeholder="∞" value={tier.maxFYP || ''} onChange={(e) => updateBonusTier(tier.id, 'maxFYP', e.target.value ? parseInt(e.target.value) : null)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
                         </>
                       ) : (
                         <>
-                          <div><Label className="text-[9px] text-muted-foreground">IP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(tier.minFYP) || ''} onChange={(e) => updateBonusTier(tier.id, 'minFYP', nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-amber-200" /></div>
-                          <div><Label className="text-[9px] text-muted-foreground">IP đến (ngàn)</Label><Input type="number" placeholder="∞" value={tier.maxFYP ? vndToNgan(tier.maxFYP) : ''} onChange={(e) => updateBonusTier(tier.id, 'maxFYP', e.target.value ? nganToVnd(parseFloat(e.target.value)) : null)} className="h-7 text-xs border-amber-200" /></div>
+                          <div><Label className="text-[9px] text-muted-foreground">IP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(tier.minFYP) || ''} onChange={(e) => updateBonusTier(tier.id, 'minFYP', nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
+                          <div><Label className="text-[9px] text-muted-foreground">IP đến (ngàn)</Label><Input type="number" placeholder="∞" value={tier.maxFYP ? vndToNgan(tier.maxFYP) : ''} onChange={(e) => updateBonusTier(tier.id, 'maxFYP', e.target.value ? nganToVnd(parseFloat(e.target.value)) : null)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
                         </>
                       )}
                       <div>
                         <Label className="text-[9px] text-muted-foreground">{tier.bonusType === 'money' ? 'Thưởng (ngàn)' : tier.bonusType === 'money_per_round' ? 'Tiền/lượt (ngàn)' : tier.bonusType === 'percent' ? '% IP' : 'Quà tặng'}</Label>
-                        {tier.bonusType === 'money' || tier.bonusType === 'money_per_round' ? <Input type="number" placeholder="0" value={vndToNgan(tier.bonusAmount) || ''} onChange={(e) => updateBonusTier(tier.id, 'bonusAmount', nganToVnd(parseFloat(e.target.value) || 0))} className={`h-7 text-xs ${tier.bonusType === 'money_per_round' ? 'border-orange-200' : 'border-amber-200'}`} />
-                        : tier.bonusType === 'percent' ? <Input type="number" placeholder="7" value={tier.bonusPercent || ''} onChange={(e) => updateBonusTier(tier.id, 'bonusPercent', parseFloat(e.target.value) || 0)} className="h-7 text-xs border-violet-200" />
-                        : <Input type="text" placeholder="VD: iPhone 15" value={tier.bonusText} onChange={(e) => updateBonusTier(tier.id, 'bonusText', e.target.value)} className="h-7 text-xs border-pink-200" />}
+                        {tier.bonusType === 'money' || tier.bonusType === 'money_per_round' ? <Input type="number" placeholder="0" value={vndToNgan(tier.bonusAmount) || ''} onChange={(e) => updateBonusTier(tier.id, 'bonusAmount', nganToVnd(parseFloat(e.target.value) || 0))} className={`h-7 text-xs ${tier.bonusType === 'money_per_round' ? 'border-[#2f3640] bg-[#252d37] text-[#e7e9ea]' : 'border-[#2f3640] bg-[#252d37] text-[#e7e9ea]'}`} />
+                        : tier.bonusType === 'percent' ? <Input type="number" placeholder="7" value={tier.bonusPercent || ''} onChange={(e) => updateBonusTier(tier.id, 'bonusPercent', parseFloat(e.target.value) || 0)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" />
+                        : <Input type="text" placeholder="VD: iPhone 15" value={tier.bonusText} onChange={(e) => updateBonusTier(tier.id, 'bonusText', e.target.value)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" />}
                       </div>
                     </div>
                   </div>
@@ -1605,20 +1605,20 @@ export default function Home() {
             {/* Phase 2 Bonus Tiers */}
             {usePhase2 && (
               <>
-                <Separator />
+                <Separator className="bg-[#2f3640]" />
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label className="text-xs font-medium text-blue-700">Bảng mức thưởng - Giai đoạn 2</Label>
-                    <Button variant="ghost" size="sm" onClick={addBonusTier2} className="text-blue-600 hover:text-blue-700 h-6 text-xs"><Plus className="w-3 h-3 mr-0.5" /> Thêm mức GĐ2</Button>
+                    <Label className="text-xs font-medium text-blue-300">Bảng mức thưởng - Giai đoạn 2</Label>
+                    <Button variant="ghost" size="sm" onClick={addBonusTier2} className="text-blue-400 hover:text-blue-300 h-6 text-xs"><Plus className="w-3 h-3 mr-0.5" /> Thêm mức GĐ2</Button>
                   </div>
                   {bonusTiers2.length === 0 && (
-                    <p className="text-[10px] text-blue-500 italic">Chưa có mức thưởng GĐ2. Nhấn &quot;Thêm mức GĐ2&quot; để tạo.</p>
+                    <p className="text-[10px] text-blue-400 italic">Chưa có mức thưởng GĐ2. Nhấn &quot;Thêm mức GĐ2&quot; để tạo.</p>
                   )}
                   <div className="space-y-2">
                     {bonusTiers2.map((tier, index) => (
-                      <div key={tier.id} className="p-2 rounded-lg bg-blue-50/50 border border-blue-100">
+                      <div key={tier.id} className="p-2 rounded-lg bg-[#252d37]/50 border border-[#2f3640]">
                         <div className="flex items-center gap-1.5 mb-1.5">
-                          <span className="text-[10px] font-bold text-blue-700 bg-blue-100 px-1.5 py-0.5 rounded">Mức GĐ2 {index + 1}</span>
+                          <span className="text-[10px] font-bold text-blue-300 bg-blue-900/40 px-1.5 py-0.5 rounded">Mức GĐ2 {index + 1}</span>
                           <div className="flex items-center gap-0.5 ml-auto">
                             {([['money', 'Tiền', Banknote, 'bg-blue-600'], ['money_per_round', 'Tiền×Lượt', Zap, 'bg-orange-600'], ['gift', 'Quà', Gift, 'bg-pink-600'], ['percent', '% IP', Percent, 'bg-violet-600']] as const).map(([type, label, Icon, activeCls]) => (
                               <Button key={type} variant={tier.bonusType === type ? 'default' : 'outline'} size="sm" className={`h-5 px-1.5 text-[9px] ${tier.bonusType === type ? activeCls + ' hover:opacity-90' : ''}`} onClick={() => updateBonusTier2(tier.id, 'bonusType', type)}><Icon className="w-2.5 h-2.5 mr-0.5" />{label}</Button>
@@ -1629,20 +1629,20 @@ export default function Home() {
                         <div className="grid grid-cols-3 gap-1.5">
                           {isActivityRoundMode(conditionType) || conditionType === 'nyd_activity' ? (
                             <>
-                              <div><Label className="text-[9px] text-muted-foreground">Lượt từ</Label><Input type="number" placeholder="0" value={tier.minFYP || ''} onChange={(e) => updateBonusTier2(tier.id, 'minFYP', parseInt(e.target.value) || 0)} className="h-7 text-xs border-blue-200" /></div>
-                              <div><Label className="text-[9px] text-muted-foreground">Lượt đến</Label><Input type="number" placeholder="∞" value={tier.maxFYP || ''} onChange={(e) => updateBonusTier2(tier.id, 'maxFYP', e.target.value ? parseInt(e.target.value) : null)} className="h-7 text-xs border-blue-200" /></div>
+                              <div><Label className="text-[9px] text-muted-foreground">Lượt từ</Label><Input type="number" placeholder="0" value={tier.minFYP || ''} onChange={(e) => updateBonusTier2(tier.id, 'minFYP', parseInt(e.target.value) || 0)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
+                              <div><Label className="text-[9px] text-muted-foreground">Lượt đến</Label><Input type="number" placeholder="∞" value={tier.maxFYP || ''} onChange={(e) => updateBonusTier2(tier.id, 'maxFYP', e.target.value ? parseInt(e.target.value) : null)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
                             </>
                           ) : (
                             <>
-                              <div><Label className="text-[9px] text-muted-foreground">IP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(tier.minFYP) || ''} onChange={(e) => updateBonusTier2(tier.id, 'minFYP', nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-blue-200" /></div>
-                              <div><Label className="text-[9px] text-muted-foreground">IP đến (ngàn)</Label><Input type="number" placeholder="∞" value={tier.maxFYP ? vndToNgan(tier.maxFYP) : ''} onChange={(e) => updateBonusTier2(tier.id, 'maxFYP', e.target.value ? nganToVnd(parseFloat(e.target.value)) : null)} className="h-7 text-xs border-blue-200" /></div>
+                              <div><Label className="text-[9px] text-muted-foreground">IP từ (ngàn)</Label><Input type="number" placeholder="0" value={vndToNgan(tier.minFYP) || ''} onChange={(e) => updateBonusTier2(tier.id, 'minFYP', nganToVnd(parseFloat(e.target.value) || 0))} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
+                              <div><Label className="text-[9px] text-muted-foreground">IP đến (ngàn)</Label><Input type="number" placeholder="∞" value={tier.maxFYP ? vndToNgan(tier.maxFYP) : ''} onChange={(e) => updateBonusTier2(tier.id, 'maxFYP', e.target.value ? nganToVnd(parseFloat(e.target.value)) : null)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" /></div>
                             </>
                           )}
                           <div>
                             <Label className="text-[9px] text-muted-foreground">{tier.bonusType === 'money' ? 'Thưởng (ngàn)' : tier.bonusType === 'money_per_round' ? 'Tiền/lượt (ngàn)' : tier.bonusType === 'percent' ? '% IP' : 'Quà tặng'}</Label>
-                            {tier.bonusType === 'money' || tier.bonusType === 'money_per_round' ? <Input type="number" placeholder="0" value={vndToNgan(tier.bonusAmount) || ''} onChange={(e) => updateBonusTier2(tier.id, 'bonusAmount', nganToVnd(parseFloat(e.target.value) || 0))} className={`h-7 text-xs ${tier.bonusType === 'money_per_round' ? 'border-orange-200' : 'border-blue-200'}`} />
-                            : tier.bonusType === 'percent' ? <Input type="number" placeholder="7" value={tier.bonusPercent || ''} onChange={(e) => updateBonusTier2(tier.id, 'bonusPercent', parseFloat(e.target.value) || 0)} className="h-7 text-xs border-violet-200" />
-                            : <Input type="text" placeholder="VD: iPhone 15" value={tier.bonusText} onChange={(e) => updateBonusTier2(tier.id, 'bonusText', e.target.value)} className="h-7 text-xs border-pink-200" />}
+                            {tier.bonusType === 'money' || tier.bonusType === 'money_per_round' ? <Input type="number" placeholder="0" value={vndToNgan(tier.bonusAmount) || ''} onChange={(e) => updateBonusTier2(tier.id, 'bonusAmount', nganToVnd(parseFloat(e.target.value) || 0))} className={`h-7 text-xs ${tier.bonusType === 'money_per_round' ? 'border-[#2f3640] bg-[#252d37] text-[#e7e9ea]' : 'border-[#2f3640] bg-[#252d37] text-[#e7e9ea]'}`} />
+                            : tier.bonusType === 'percent' ? <Input type="number" placeholder="7" value={tier.bonusPercent || ''} onChange={(e) => updateBonusTier2(tier.id, 'bonusPercent', parseFloat(e.target.value) || 0)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" />
+                            : <Input type="text" placeholder="VD: iPhone 15" value={tier.bonusText} onChange={(e) => updateBonusTier2(tier.id, 'bonusText', e.target.value)} className="h-7 text-xs border-[#2f3640] bg-[#252d37] text-[#e7e9ea]" />}
                           </div>
                         </div>
                       </div>
@@ -1652,12 +1652,12 @@ export default function Home() {
               </>
             )}
 
-            <Separator />
+            <Separator className="bg-[#2f3640]" />
 
             {/* Poster + Action */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
               <div className="flex items-center gap-2">
-                <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-medium transition-colors">
+                <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#00c853] hover:bg-[#00c853]/90 text-white rounded-lg text-xs font-medium transition-colors">
                   <ImageIcon className="w-3.5 h-3.5" /> Ảnh poster
                   <input type="file" accept="image/*" onChange={handlePosterUpload} className="hidden" />
                 </label>
@@ -1665,7 +1665,7 @@ export default function Home() {
                 {posterUrl && <img src={posterUrl} alt="Preview" className="h-8 rounded border" />}
               </div>
               <div className="flex gap-2 sm:ml-auto">
-                <Button onClick={handleSearch} className="bg-emerald-600 hover:bg-emerald-700 h-9 text-sm"><Search className="w-4 h-4 mr-1.5" /> Tính kết quả thi đua</Button>
+                <Button onClick={handleSearch} className="bg-[#00c853] hover:bg-[#00c853]/90 h-9 text-sm"><Search className="w-4 h-4 mr-1.5" /> Tính kết quả thi đua</Button>
                 <Button variant="outline" onClick={() => { setStartDate(''); setEndDate(''); setIssueDate(''); setFilteredContracts([]); setSelectedContestId(''); }} className="h-9"><X className="w-4 h-4" /></Button>
               </div>
             </div>
@@ -1673,13 +1673,13 @@ export default function Home() {
         </Card>
 
         {/* STEP 3: Participant List */}
-        <Card className="border-violet-200 shadow-sm">
+        <Card className="border-[#2f3640] shadow-sm bg-[#1a1f26]">
           <CardHeader className="pb-2 pt-4 px-4">
             <button className="flex items-center justify-between w-full" onClick={() => setShowParticipantList(!showParticipantList)}>
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-full bg-violet-500 text-white flex items-center justify-center text-sm font-bold">3</div>
-                <CardTitle className="text-sm">Danh sách đối tượng</CardTitle>
-                {useParticipantFilter && participants.length > 0 && <Badge variant="secondary" className="text-[10px] bg-violet-100 text-violet-700">{participants.length} người</Badge>}
+                <CardTitle className="text-sm text-[#e7e9ea]">Danh sách đối tượng</CardTitle>
+                {useParticipantFilter && participants.length > 0 && <Badge variant="secondary" className="text-[10px] bg-violet-900/40 text-violet-300">{participants.length} người</Badge>}
               </div>
               {showParticipantList ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
             </button>
@@ -1688,28 +1688,28 @@ export default function Home() {
             <CardContent className="px-4 pb-4 space-y-3">
               <div className="flex items-center space-x-2">
                 <Checkbox id="useFilter" checked={useParticipantFilter} onCheckedChange={(v) => setUseParticipantFilter(v === true)} />
-                <Label htmlFor="useFilter" className="text-xs font-medium">Giới hạn danh sách (chỉ tính cho những người trong danh sách)</Label>
+                <Label htmlFor="useFilter" className="text-xs font-medium text-[#e7e9ea]">Giới hạn danh sách (chỉ tính cho những người trong danh sách)</Label>
               </div>
 
               {useParticipantFilter && (
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" onClick={addParticipant} className="h-7 text-xs border-violet-300 text-violet-700 hover:bg-violet-50"><UserPlus className="w-3 h-3 mr-1" /> Thêm dòng</Button>
-                    <Button variant="outline" size="sm" onClick={handlePasteParticipants} className="h-7 text-xs border-violet-300 text-violet-700 hover:bg-violet-50"><Copy className="w-3 h-3 mr-1" /> Dán từ clipboard</Button>
+                    <Button variant="outline" size="sm" onClick={addParticipant} className="h-7 text-xs border-[#2f3640] text-violet-300 hover:bg-[#252d37]/50"><UserPlus className="w-3 h-3 mr-1" /> Thêm dòng</Button>
+                    <Button variant="outline" size="sm" onClick={handlePasteParticipants} className="h-7 text-xs border-[#2f3640] text-violet-300 hover:bg-[#252d37]/50"><Copy className="w-3 h-3 mr-1" /> Dán từ clipboard</Button>
                     {participants.length > 0 && <Button variant="outline" size="sm" onClick={() => setParticipants([])} className="h-7 text-xs text-red-600 hover:text-red-700"><Trash2 className="w-3 h-3 mr-1" /> Xóa hết</Button>}
                   </div>
 
                   {participants.length > 0 && (
-                    <div className="rounded-lg border border-violet-200 overflow-x-auto max-h-48 overflow-y-auto">
+                    <div className="rounded-lg border border-[#2f3640] overflow-x-auto max-h-48 overflow-y-auto">
                       <Table>
-                        <TableHeader><TableRow className="bg-violet-50"><TableHead className="text-[10px] w-[35px] text-center">STT</TableHead><TableHead className="text-[10px]">Nhóm</TableHead><TableHead className="text-[10px]">Mã Số</TableHead><TableHead className="text-[10px]">Họ Tên</TableHead><TableHead className="w-[30px]"></TableHead></TableRow></TableHeader>
+                        <TableHeader><TableRow className="bg-[#252d37]"><TableHead className="text-[10px] w-[35px] text-center">STT</TableHead><TableHead className="text-[10px]">Nhóm</TableHead><TableHead className="text-[10px]">Mã Số</TableHead><TableHead className="text-[10px]">Họ Tên</TableHead><TableHead className="w-[30px]"></TableHead></TableRow></TableHeader>
                         <TableBody>
                           {participants.map((p, idx) => (
                             <TableRow key={p.id}>
                               <TableCell className="text-center text-gray-500 text-[10px]">{idx + 1}</TableCell>
-                              <TableCell><Input value={p.nhom} onChange={(e) => updateParticipant(p.id, 'nhom', e.target.value)} className="h-6 text-[10px] border-violet-200 min-w-[60px]" /></TableCell>
-                              <TableCell><Input value={p.maSo} onChange={(e) => updateParticipant(p.id, 'maSo', e.target.value)} className="h-6 text-[10px] border-violet-200 min-w-[80px]" placeholder="Mã ĐL" /></TableCell>
-                              <TableCell><Input value={p.hoTen} onChange={(e) => updateParticipant(p.id, 'hoTen', e.target.value)} className="h-6 text-[10px] border-violet-200 min-w-[120px]" placeholder="Họ tên" /></TableCell>
+                              <TableCell><Input value={p.nhom} onChange={(e) => updateParticipant(p.id, 'nhom', e.target.value)} className="h-6 text-[10px] border-[#2f3640] bg-[#252d37] text-[#e7e9ea] min-w-[60px]" /></TableCell>
+                              <TableCell><Input value={p.maSo} onChange={(e) => updateParticipant(p.id, 'maSo', e.target.value)} className="h-6 text-[10px] border-[#2f3640] bg-[#252d37] text-[#e7e9ea] min-w-[80px]" placeholder="Mã ĐL" /></TableCell>
+                              <TableCell><Input value={p.hoTen} onChange={(e) => updateParticipant(p.id, 'hoTen', e.target.value)} className="h-6 text-[10px] border-[#2f3640] bg-[#252d37] text-[#e7e9ea] min-w-[120px]" placeholder="Họ tên" /></TableCell>
                               <TableCell><Button variant="ghost" size="sm" onClick={() => removeParticipant(p.id)} className="h-5 w-5 p-0 text-red-400 hover:text-red-600"><Trash2 className="w-2.5 h-2.5" /></Button></TableCell>
                             </TableRow>
                           ))}
@@ -1732,11 +1732,11 @@ export default function Home() {
         {hasResults && (
           <div className="space-y-3">
             <div className="flex items-center gap-1.5 justify-end flex-wrap">
-              <Button variant="outline" size="sm" onClick={handleCopyText} className="border-teal-300 text-teal-700 h-7 text-xs"><Copy className="w-3 h-3 mr-1" />Copy</Button>
-              <Button variant="outline" size="sm" onClick={handlePrint} className="border-emerald-300 text-emerald-700 h-7 text-xs"><Printer className="w-3 h-3 mr-1" />In PDF</Button>
-              <Button variant="outline" size="sm" onClick={handleExportImage} className="border-amber-300 text-amber-700 h-7 text-xs"><ImageIcon className="w-3 h-3 mr-1" />Ảnh</Button>
+              <Button variant="outline" size="sm" onClick={handleCopyText} className="border-[#00c853] text-[#00c853] h-7 text-xs"><Copy className="w-3 h-3 mr-1" />Copy</Button>
+              <Button variant="outline" size="sm" onClick={handlePrint} className="border-[#00c853] text-[#00c853] h-7 text-xs"><Printer className="w-3 h-3 mr-1" />In PDF</Button>
+              <Button variant="outline" size="sm" onClick={handleExportImage} className="border-[#00c853] text-[#00c853] h-7 text-xs"><ImageIcon className="w-3 h-3 mr-1" />Ảnh</Button>
               <Button variant="outline" size="sm" onClick={handleExportCSV} className="h-7 text-xs"><Download className="w-3 h-3 mr-1" />CSV</Button>
-              <Button variant="outline" size="sm" onClick={handleExportExcel} className="h-7 text-xs border-emerald-400 text-emerald-700"><FileSpreadsheet className="w-3 h-3 mr-1" />Excel</Button>
+              <Button variant="outline" size="sm" onClick={handleExportExcel} className="h-7 text-xs border-[#00c853] text-[#00c853]"><FileSpreadsheet className="w-3 h-3 mr-1" />Excel</Button>
             </div>
 
             <div ref={printRef}>
@@ -2090,14 +2090,14 @@ export default function Home() {
 
         {/* Empty */}
         {!hasResults && (
-          <Card className="border-gray-200"><CardContent className="py-10 text-center text-gray-400"><Trophy className="w-12 h-12 mx-auto mb-3 opacity-20" /><p className="text-sm font-medium text-gray-500">Thiết lập thi đua & nhấn &ldquo;Tính kết quả&rdquo;</p></CardContent></Card>
+          <Card className="border-[#2f3640] bg-[#1a1f26]"><CardContent className="py-10 text-center text-[#71767b]"><Trophy className="w-12 h-12 mx-auto mb-3 opacity-20" /><p className="text-sm font-medium text-[#71767b]">Thiết lập thi đua & nhấn &ldquo;Tính kết quả&rdquo;</p></CardContent></Card>
         )}
 
         {/* Source Data - collapsible */}
-        <Card className="border-gray-200 shadow-sm">
+        <Card className="border-[#2f3640] shadow-sm bg-[#1a1f26]">
           <CardHeader className="pb-2 pt-3 px-4">
             <button className="flex items-center justify-between w-full" onClick={() => setShowSourceData(!showSourceData)}>
-              <div className="flex items-center gap-2"><Database className="w-4 h-4 text-gray-600" /><CardTitle className="text-sm">Dữ liệu nguồn</CardTitle><Badge variant="secondary" className="text-[10px]">{contracts.length} HĐ</Badge></div>
+              <div className="flex items-center gap-2"><Database className="w-4 h-4 text-[#71767b]" /><CardTitle className="text-sm text-[#e7e9ea]">Dữ liệu nguồn</CardTitle><Badge variant="secondary" className="text-[10px]">{contracts.length} HĐ</Badge></div>
               {showSourceData ? <ChevronUp className="w-4 h-4 text-gray-400" /> : <ChevronDown className="w-4 h-4 text-gray-400" />}
             </button>
           </CardHeader>
@@ -2106,10 +2106,10 @@ export default function Home() {
               {contracts.length === 0 ? (
                 <div className="text-center py-6 text-gray-400"><Database className="w-8 h-8 mx-auto mb-2 opacity-30" /><p className="text-sm font-medium">Chưa có dữ liệu</p><p className="text-xs">Nhấn &ldquo;Nhập Google Sheets&rdquo; để tải</p></div>
               ) : (
-                <div className="rounded-lg border overflow-x-auto max-h-48 overflow-y-auto">
-                  <Table><TableHeader><TableRow className="bg-gray-50 sticky top-0"><TableHead className="w-[35px] text-center text-xs">STT</TableHead><TableHead className="text-xs">Nhóm</TableHead><TableHead className="text-xs">Mã</TableHead><TableHead className="text-xs">Họ tên</TableHead><TableHead className="text-xs">Chức vụ</TableHead><TableHead className="text-xs">Mã TN</TableHead><TableHead className="text-xs">Ngày HL</TableHead><TableHead className="text-xs">IP</TableHead><TableHead className="text-xs">Tính Lượt</TableHead><TableHead className="w-[30px]"></TableHead></TableRow></TableHeader>
+                <div className="rounded-lg border border-[#2f3640] overflow-x-auto max-h-48 overflow-y-auto">
+                  <Table><TableHeader><TableRow className="bg-[#252d37] sticky top-0"><TableHead className="w-[35px] text-center text-xs">STT</TableHead><TableHead className="text-xs">Nhóm</TableHead><TableHead className="text-xs">Mã</TableHead><TableHead className="text-xs">Họ tên</TableHead><TableHead className="text-xs">Chức vụ</TableHead><TableHead className="text-xs">Mã TN</TableHead><TableHead className="text-xs">Ngày HL</TableHead><TableHead className="text-xs">IP</TableHead><TableHead className="text-xs">Tính Lượt</TableHead><TableHead className="w-[30px]"></TableHead></TableRow></TableHeader>
                     <TableBody>{contracts.map((c, idx) => (
-                      <TableRow key={c.id} className="hover:bg-gray-50"><TableCell className="text-center text-gray-500 text-xs">{idx + 1}</TableCell><TableCell className="font-mono text-[10px] text-emerald-700 whitespace-nowrap">{c.nhom}</TableCell><TableCell className="font-mono text-[10px] whitespace-nowrap">{c.agentCode}</TableCell><TableCell className="text-xs whitespace-nowrap">{c.agentName}</TableCell><TableCell className="text-[10px] whitespace-nowrap">{c.position}</TableCell><TableCell className="text-[10px] text-blue-600 whitespace-nowrap">{c.leaderAgentCode || '—'}</TableCell><TableCell className="text-[10px] text-gray-600 whitespace-nowrap">{formatDate(c.effectiveDate)}</TableCell><TableCell className="font-semibold text-emerald-700 text-xs whitespace-nowrap">{formatNumber(c.fyp)}</TableCell><TableCell className="text-[10px] text-gray-600 whitespace-nowrap">{c.tinhLuot ? formatNumber(c.tinhLuot) : '—'}</TableCell><TableCell><Button variant="ghost" size="sm" onClick={() => handleDeleteContract(c.id)} className="h-5 w-5 p-0 text-red-400 hover:text-red-600"><Trash2 className="w-3 h-3" /></Button></TableCell></TableRow>
+                      <TableRow key={c.id} className="hover:bg-[#252d37]/50"><TableCell className="text-center text-gray-500 text-xs">{idx + 1}</TableCell><TableCell className="font-mono text-[10px] text-emerald-700 whitespace-nowrap">{c.nhom}</TableCell><TableCell className="font-mono text-[10px] whitespace-nowrap">{c.agentCode}</TableCell><TableCell className="text-xs whitespace-nowrap">{c.agentName}</TableCell><TableCell className="text-[10px] whitespace-nowrap">{c.position}</TableCell><TableCell className="text-[10px] text-blue-600 whitespace-nowrap">{c.leaderAgentCode || '—'}</TableCell><TableCell className="text-[10px] text-gray-600 whitespace-nowrap">{formatDate(c.effectiveDate)}</TableCell><TableCell className="font-semibold text-emerald-700 text-xs whitespace-nowrap">{formatNumber(c.fyp)}</TableCell><TableCell className="text-[10px] text-gray-600 whitespace-nowrap">{c.tinhLuot ? formatNumber(c.tinhLuot) : '—'}</TableCell><TableCell><Button variant="ghost" size="sm" onClick={() => handleDeleteContract(c.id)} className="h-5 w-5 p-0 text-red-400 hover:text-red-600"><Trash2 className="w-3 h-3" /></Button></TableCell></TableRow>
                     ))}</TableBody>
                   </Table>
                 </div>
@@ -2121,29 +2121,29 @@ export default function Home() {
 
       {/* Import Dialog */}
       <Dialog open={isImportDialogOpen} onOpenChange={setIsImportDialogOpen}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader><DialogTitle>Nhập dữ liệu từ Google Sheets</DialogTitle><DialogDescription>Dán liên kết CSV để nhập dữ liệu hợp đồng</DialogDescription></DialogHeader>
+        <DialogContent className="sm:max-w-lg bg-[#1a1f26] border-[#2f3640]">
+          <DialogHeader><DialogTitle className="text-[#e7e9ea]">Nhập dữ liệu từ Google Sheets</DialogTitle><DialogDescription className="text-[#71767b]">Dán liên kết CSV để nhập dữ liệu hợp đồng</DialogDescription></DialogHeader>
           <div className="space-y-3 py-3">
-            <div className="space-y-1"><Label className="text-xs">Liên kết CSV</Label><Input value={csvUrl} onChange={(e) => setCsvUrl(e.target.value)} className="font-mono text-xs h-8" /></div>
-            <div className="rounded-lg bg-amber-50 border border-amber-200 p-2 text-xs text-amber-800"><p className="font-medium mb-1">Cột sử dụng:</p><ul className="space-y-0.5 ml-3 list-disc"><li><b>Ngày hiệu lực</b> → Ngày bắt đầu thi đua</li><li><b>PĐT + 10% ĐT</b> → IP</li><li><b>TÍNH LƯỢT</b> → Cột 27</li></ul></div>
+            <div className="space-y-1"><Label className="text-xs text-[#71767b]">Liên kết CSV</Label><Input value={csvUrl} onChange={(e) => setCsvUrl(e.target.value)} className="font-mono text-xs h-8 bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div>
+            <div className="rounded-lg bg-[#252d37] border border-[#2f3640] p-2 text-xs text-amber-300"><p className="font-medium mb-1">Cột sử dụng:</p><ul className="space-y-0.5 ml-3 list-disc"><li><b>Ngày hiệu lực</b> → Ngày bắt đầu thi đua</li><li><b>PĐT + 10% ĐT</b> → IP</li><li><b>TÍNH LƯỢT</b> → Cột 27</li></ul></div>
           </div>
-          <DialogFooter><Button variant="outline" onClick={() => setIsImportDialogOpen(false)} className="h-8">Hủy</Button><Button onClick={handleImportFromUrl} disabled={isImporting} className="bg-emerald-600 hover:bg-emerald-700 h-8">{isImporting ? <><Loader2 className="w-3 h-3 mr-1 animate-spin" /> Đang nhập...</> : <><RefreshCw className="w-3 h-3 mr-1" /> Nhập dữ liệu</>}</Button></DialogFooter>
+          <DialogFooter><Button variant="outline" onClick={() => setIsImportDialogOpen(false)} className="h-8">Hủy</Button><Button onClick={handleImportFromUrl} disabled={isImporting} className="bg-[#00c853] hover:bg-[#00c853]/90 h-8">{isImporting ? <><Loader2 className="w-3 h-3 mr-1 animate-spin" /> Đang nhập...</> : <><RefreshCw className="w-3 h-3 mr-1" /> Nhập dữ liệu</>}</Button></DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Add Contract Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent className="sm:max-w-2xl">
-          <DialogHeader><DialogTitle>Thêm hợp đồng mới</DialogTitle></DialogHeader>
+        <DialogContent className="sm:max-w-2xl bg-[#1a1f26] border-[#2f3640]">
+          <DialogHeader><DialogTitle className="text-[#e7e9ea]">Thêm hợp đồng mới</DialogTitle></DialogHeader>
           <div className="grid gap-3 py-3">
-            <div className="grid grid-cols-2 gap-3"><div className="space-y-1"><Label className="text-xs">Số HĐ</Label><Input placeholder="10000017624818" value={newContract.contractNumber} onChange={(e) => setNewContract({ ...newContract, contractNumber: e.target.value })} className="h-8 text-xs" /></div><div className="space-y-1"><Label className="text-xs">Mã đại lý</Label><Input placeholder="D104142435" value={newContract.agentCode} onChange={(e) => setNewContract({ ...newContract, agentCode: e.target.value })} className="h-8 text-xs" /></div></div>
-            <div className="grid grid-cols-2 gap-3"><div className="space-y-1"><Label className="text-xs">Tên TVV</Label><Input placeholder="Nguyễn Văn A" value={newContract.agentName} onChange={(e) => setNewContract({ ...newContract, agentName: e.target.value })} className="h-8 text-xs" /></div><div className="space-y-1"><Label className="text-xs">Chức vụ</Label><Select value={newContract.position} onValueChange={(v) => setNewContract({ ...newContract, position: v })}><SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Chọn" /></SelectTrigger><SelectContent><SelectItem value="Tư vấn tài chính">TVV</SelectItem><SelectItem value="Trưởng nhóm">Trưởng nhóm</SelectItem><SelectItem value="Tiền trưởng nhóm">Tiền trưởng nhóm</SelectItem><SelectItem value="Trưởng ban">Trưởng ban</SelectItem></SelectContent></Select></div></div>
-            <div className="grid grid-cols-3 gap-3"><div className="space-y-1"><Label className="text-xs">Ban</Label><Input value={newContract.ban} onChange={(e) => setNewContract({ ...newContract, ban: e.target.value })} className="h-8 text-xs" /></div><div className="space-y-1"><Label className="text-xs">Nhóm</Label><Input value={newContract.nhom} onChange={(e) => setNewContract({ ...newContract, nhom: e.target.value })} className="h-8 text-xs" /></div><div className="space-y-1"><Label className="text-xs">Mã nhóm</Label><Input value={newContract.maNhom} onChange={(e) => setNewContract({ ...newContract, maNhom: e.target.value })} className="h-8 text-xs" /></div></div>
-            <div className="grid grid-cols-2 gap-3"><div className="space-y-1"><Label className="text-xs">Mã NYD tuyển dụng</Label><Input placeholder="Mã đại lý tuyển dụng" value={newContract.recruiterCode} onChange={(e) => setNewContract({ ...newContract, recruiterCode: e.target.value })} className="h-8 text-xs" /></div><div className="space-y-1"><Label className="text-xs">Ngày bắt đầu LV</Label><Input type="date" value={newContract.startDate} onChange={(e) => setNewContract({ ...newContract, startDate: e.target.value })} className="h-8 text-xs" /></div></div>
-            <div className="grid grid-cols-2 gap-3"><div className="space-y-1"><Label className="text-xs">Ngày hiệu lực</Label><Input type="date" value={newContract.effectiveDate} onChange={(e) => setNewContract({ ...newContract, effectiveDate: e.target.value })} className="h-8 text-xs" /></div><div className="space-y-1"><Label className="text-xs">Ngày phát hành</Label><Input type="date" value={newContract.issueDate} onChange={(e) => setNewContract({ ...newContract, issueDate: e.target.value })} className="h-8 text-xs" /></div></div>
-            <div className="grid grid-cols-3 gap-3"><div className="space-y-1"><Label className="text-xs">IP (VNĐ)</Label><Input type="number" value={newContract.fyp} onChange={(e) => setNewContract({ ...newContract, fyp: e.target.value })} className="h-8 text-xs" /></div><div className="space-y-1"><Label className="text-xs">AFYP (VNĐ)</Label><Input type="number" value={newContract.afyp} onChange={(e) => setNewContract({ ...newContract, afyp: e.target.value })} className="h-8 text-xs" /></div><div className="space-y-1"><Label className="text-xs">Tính Lượt</Label><Input type="number" value={newContract.tinhLuot} onChange={(e) => setNewContract({ ...newContract, tinhLuot: e.target.value })} className="h-8 text-xs" /></div></div>
+            <div className="grid grid-cols-2 gap-3"><div className="space-y-1"><Label className="text-xs text-[#71767b]">Số HĐ</Label><Input placeholder="10000017624818" value={newContract.contractNumber} onChange={(e) => setNewContract({ ...newContract, contractNumber: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Mã đại lý</Label><Input placeholder="D104142435" value={newContract.agentCode} onChange={(e) => setNewContract({ ...newContract, agentCode: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div></div>
+            <div className="grid grid-cols-2 gap-3"><div className="space-y-1"><Label className="text-xs text-[#71767b]">Tên TVV</Label><Input placeholder="Nguyễn Văn A" value={newContract.agentName} onChange={(e) => setNewContract({ ...newContract, agentName: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Chức vụ</Label><Select value={newContract.position} onValueChange={(v) => setNewContract({ ...newContract, position: v })}><SelectTrigger className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]"><SelectValue placeholder="Chọn" /></SelectTrigger><SelectContent><SelectItem value="Tư vấn tài chính">TVV</SelectItem><SelectItem value="Trưởng nhóm">Trưởng nhóm</SelectItem><SelectItem value="Tiền trưởng nhóm">Tiền trưởng nhóm</SelectItem><SelectItem value="Trưởng ban">Trưởng ban</SelectItem></SelectContent></Select></div></div>
+            <div className="grid grid-cols-3 gap-3"><div className="space-y-1"><Label className="text-xs text-[#71767b]">Ban</Label><Input value={newContract.ban} onChange={(e) => setNewContract({ ...newContract, ban: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Nhóm</Label><Input value={newContract.nhom} onChange={(e) => setNewContract({ ...newContract, nhom: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Mã nhóm</Label><Input value={newContract.maNhom} onChange={(e) => setNewContract({ ...newContract, maNhom: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div></div>
+            <div className="grid grid-cols-2 gap-3"><div className="space-y-1"><Label className="text-xs text-[#71767b]">Mã NYD tuyển dụng</Label><Input placeholder="Mã đại lý tuyển dụng" value={newContract.recruiterCode} onChange={(e) => setNewContract({ ...newContract, recruiterCode: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Ngày bắt đầu LV</Label><Input type="date" value={newContract.startDate} onChange={(e) => setNewContract({ ...newContract, startDate: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div></div>
+            <div className="grid grid-cols-2 gap-3"><div className="space-y-1"><Label className="text-xs text-[#71767b]">Ngày hiệu lực</Label><Input type="date" value={newContract.effectiveDate} onChange={(e) => setNewContract({ ...newContract, effectiveDate: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Ngày phát hành</Label><Input type="date" value={newContract.issueDate} onChange={(e) => setNewContract({ ...newContract, issueDate: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div></div>
+            <div className="grid grid-cols-3 gap-3"><div className="space-y-1"><Label className="text-xs text-[#71767b]">IP (VNĐ)</Label><Input type="number" value={newContract.fyp} onChange={(e) => setNewContract({ ...newContract, fyp: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">AFYP (VNĐ)</Label><Input type="number" value={newContract.afyp} onChange={(e) => setNewContract({ ...newContract, afyp: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div><div className="space-y-1"><Label className="text-xs text-[#71767b]">Tính Lượt</Label><Input type="number" value={newContract.tinhLuot} onChange={(e) => setNewContract({ ...newContract, tinhLuot: e.target.value })} className="h-8 text-xs bg-[#252d37] border-[#2f3640] text-[#e7e9ea]" /></div></div>
           </div>
-          <DialogFooter><Button variant="outline" onClick={() => setIsAddDialogOpen(false)} className="h-8">Hủy</Button><Button onClick={handleCreateContract} className="bg-emerald-600 hover:bg-emerald-700 h-8">Tạo hợp đồng</Button></DialogFooter>
+          <DialogFooter><Button variant="outline" onClick={() => setIsAddDialogOpen(false)} className="h-8">Hủy</Button><Button onClick={handleCreateContract} className="bg-[#00c853] hover:bg-[#00c853]/90 h-8">Tạo hợp đồng</Button></DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
