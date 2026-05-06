@@ -1097,67 +1097,123 @@ export default function Home() {
             </div>
           </CardHeader>
           <CardContent className="px-4 pb-4 space-y-3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {/* Target */}
-              <div className="space-y-2">
-                <Label className="text-xs font-medium">Đối tượng</Label>
-                <RadioGroup value={targetType} onValueChange={(v) => { setTargetType(v as TargetType); if (v === 'nyd') { setConditionType('nyd_activity'); setBonusTiers([ { id: crypto.randomUUID(), minFYP: 0, maxFYP: 2, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 }, { id: crypto.randomUUID(), minFYP: 3, maxFYP: 5, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 }, { id: crypto.randomUUID(), minFYP: 6, maxFYP: null, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 }, ]); } }} className="space-y-1.5">
-                  <div className={`flex items-center space-x-2 rounded-lg border p-2 cursor-pointer hover:bg-emerald-50 ${isActivityRoundMode(conditionType) && targetType !== 'nhom' ? 'opacity-50 pointer-events-none' : ''}`}>
-                    <RadioGroupItem value="tvv" id="tvv" disabled={isActivityRoundMode(conditionType) && targetType !== 'nhom'} />
-                    <Label htmlFor="tvv" className="cursor-pointer flex-1"><div className="text-xs font-medium flex items-center gap-1"><Users className="w-3.5 h-3.5 text-emerald-600" /> TVV (cá nhân)</div></Label>
-                  </div>
-                  <div className={`flex items-center space-x-2 rounded-lg border p-2 cursor-pointer hover:bg-emerald-50 ${isActivityRoundMode(conditionType) && targetType !== 'nhom' ? 'opacity-50 pointer-events-none' : ''}`}>
-                    <RadioGroupItem value="nhom" id="nhom" disabled={isActivityRoundMode(conditionType) && targetType !== 'nhom'} />
-                    <Label htmlFor="nhom" className="cursor-pointer flex-1"><div className="text-xs font-medium flex items-center gap-1"><UserCheck className="w-3.5 h-3.5 text-sky-600" /> Theo nhóm (MC NHÓM)</div></Label>
-                  </div>
-                  <div className="flex items-center space-x-2 rounded-lg border p-2 cursor-pointer hover:bg-violet-50 border-violet-200">
-                    <RadioGroupItem value="nyd" id="nyd" />
-                    <Label htmlFor="nyd" className="cursor-pointer flex-1"><div className="text-xs font-medium flex items-center gap-1"><UserCog className="w-3.5 h-3.5 text-violet-600" /> Người tuyển dụng (NYD)</div></Label>
-                  </div>
-                </RadioGroup>
+            {/* Target & Condition - Compact Chip Buttons */}
+            <div className="space-y-3">
+              {/* Đối tượng */}
+              <div>
+                <Label className="text-[10px] uppercase tracking-wider font-semibold text-gray-500 mb-1.5 block">Đối tượng</Label>
+                <div className="flex flex-wrap gap-1.5">
+                  {([
+                    { value: 'tvv' as TargetType, label: 'TVV', icon: Users, activeCls: 'bg-emerald-500 text-white shadow-emerald-200 shadow-md', inactiveCls: 'bg-emerald-50 text-emerald-700 border border-emerald-200', disabled: isActivityRoundMode(conditionType) && targetType !== 'nhom' },
+                    { value: 'nhom' as TargetType, label: 'Nhóm', icon: UserCheck, activeCls: 'bg-sky-500 text-white shadow-sky-200 shadow-md', inactiveCls: 'bg-sky-50 text-sky-700 border border-sky-200', disabled: isActivityRoundMode(conditionType) && targetType !== 'nhom' },
+                    { value: 'nyd' as TargetType, label: 'NYD', icon: UserCog, activeCls: 'bg-violet-500 text-white shadow-violet-200 shadow-md', inactiveCls: 'bg-violet-50 text-violet-700 border border-violet-200', disabled: false },
+                  ]).map(({ value, label, icon: Icon, activeCls, inactiveCls, disabled }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      disabled={disabled}
+                      onClick={() => {
+                        setTargetType(value);
+                        if (value === 'nyd') {
+                          setConditionType('nyd_activity');
+                          setBonusTiers([
+                            { id: crypto.randomUUID(), minFYP: 0, maxFYP: 2, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 },
+                            { id: crypto.randomUUID(), minFYP: 3, maxFYP: 5, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 },
+                            { id: crypto.randomUUID(), minFYP: 6, maxFYP: null, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 },
+                          ]);
+                        }
+                      }}
+                      className={`
+                        inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold
+                        transition-all duration-200 ease-out cursor-pointer select-none
+                        active:scale-95 active:shadow-none
+                        ${targetType === value ? activeCls : inactiveCls}
+                        ${disabled ? 'opacity-40 pointer-events-none' : 'hover:scale-105'}
+                      `}
+                    >
+                      <Icon className="w-3 h-3" />
+                      {label}
+                    </button>
+                  ))}
+                </div>
               </div>
-              {/* Condition */}
-              <div className="space-y-2">
-                <Label className="text-xs font-medium">Điều kiện</Label>
+
+              {/* Điều kiện */}
+              <div>
+                <Label className="text-[10px] uppercase tracking-wider font-semibold text-gray-500 mb-1.5 block">Điều kiện</Label>
                 {targetType === 'nyd' ? (
-                  <RadioGroup value={conditionType} onValueChange={(v) => setConditionType(v as ConditionType)} className="space-y-1.5">
-                    <div className="flex items-center space-x-2 rounded-lg border p-2 cursor-pointer hover:bg-violet-50"><RadioGroupItem value="nyd_activity" id="nyd_ar" /><Label htmlFor="nyd_ar" className="cursor-pointer flex-1"><div className="text-xs font-medium">Số lượt TVVm hoạt động</div></Label></div>
-                    <div className="flex items-center space-x-2 rounded-lg border p-2 cursor-pointer hover:bg-violet-50"><RadioGroupItem value="nyd_fyp" id="nyd_fyp" /><Label htmlFor="nyd_fyp" className="cursor-pointer flex-1"><div className="text-xs font-medium">Doanh số FYP TVVm</div></Label></div>
-                  </RadioGroup>
+                  <div className="flex flex-wrap gap-1.5">
+                    {([
+                      { value: 'nyd_activity' as ConditionType, label: 'Lượt TVVm HĐ', activeCls: 'bg-violet-500 text-white shadow-violet-200 shadow-md', inactiveCls: 'bg-violet-50 text-violet-700 border border-violet-200' },
+                      { value: 'nyd_fyp' as ConditionType, label: 'FYP TVVm', activeCls: 'bg-violet-500 text-white shadow-violet-200 shadow-md', inactiveCls: 'bg-violet-50 text-violet-700 border border-violet-200' },
+                    ]).map(({ value, label, activeCls, inactiveCls }) => (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() => setConditionType(value)}
+                        className={`
+                          inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold
+                          transition-all duration-200 ease-out cursor-pointer select-none
+                          active:scale-95 active:shadow-none
+                          ${conditionType === value ? activeCls : inactiveCls}
+                          hover:scale-105
+                        `}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
                 ) : (
-                  <RadioGroup value={conditionType} onValueChange={(v) => {
-                  const newCt = v as ConditionType;
-                  setConditionType(newCt);
-                  // Reset bonusTiers to appropriate defaults when switching mode
-                  if (isActivityRoundMode(newCt)) {
-                    setTargetType('nhom');
-                    setBonusTiers([
-                      { id: crypto.randomUUID(), minFYP: 0, maxFYP: 2, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 },
-                      { id: crypto.randomUUID(), minFYP: 3, maxFYP: 5, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 },
-                      { id: crypto.randomUUID(), minFYP: 6, maxFYP: 9, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 },
-                      { id: crypto.randomUUID(), minFYP: 10, maxFYP: null, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 },
-                    ]);
-                  } else if (newCt === 'nyd_activity') {
-                    setBonusTiers([
-                      { id: crypto.randomUUID(), minFYP: 0, maxFYP: 2, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 },
-                      { id: crypto.randomUUID(), minFYP: 3, maxFYP: 5, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 },
-                      { id: crypto.randomUUID(), minFYP: 6, maxFYP: null, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 },
-                    ]);
-                  } else {
-                    // IP/per_contract/total_fyp mode - reset to VND defaults
-                    setBonusTiers([
-                      { id: crypto.randomUUID(), minFYP: 0, maxFYP: 20000000, bonusAmount: 500000, bonusType: 'money', bonusText: '', bonusPercent: 0 },
-                      { id: crypto.randomUUID(), minFYP: 20000000, maxFYP: 50000000, bonusAmount: 1500000, bonusType: 'money', bonusText: '', bonusPercent: 0 },
-                      { id: crypto.randomUUID(), minFYP: 50000000, maxFYP: 100000000, bonusAmount: 3000000, bonusType: 'money', bonusText: '', bonusPercent: 0 },
-                      { id: crypto.randomUUID(), minFYP: 100000000, maxFYP: null, bonusAmount: 5000000, bonusType: 'money', bonusText: '', bonusPercent: 0 },
-                    ]);
-                  }
-                }} className="space-y-1.5">
-                    <div className="flex items-center space-x-2 rounded-lg border p-2 cursor-pointer hover:bg-amber-50"><RadioGroupItem value="per_contract" id="pc" /><Label htmlFor="pc" className="cursor-pointer flex-1"><div className="text-xs font-medium">Theo HĐ (IP/HĐ)</div></Label></div>
-                    <div className="flex items-center space-x-2 rounded-lg border p-2 cursor-pointer hover:bg-amber-50"><RadioGroupItem value="total_fyp" id="tf" /><Label htmlFor="tf" className="cursor-pointer flex-1"><div className="text-xs font-medium">Tổng IP</div></Label></div>
-                    <div className="flex items-center space-x-2 rounded-lg border p-2 cursor-pointer hover:bg-amber-50"><RadioGroupItem value="activity_round" id="ar" /><Label htmlFor="ar" className="cursor-pointer flex-1"><div className="text-xs font-medium">Lượt HĐ (IP ≥ 3tr)</div></Label></div>
-                    <div className="flex items-center space-x-2 rounded-lg border p-2 cursor-pointer hover:bg-amber-50"><RadioGroupItem value="activity_round_standard" id="ars" /><Label htmlFor="ars" className="cursor-pointer flex-1"><div className="text-xs font-medium">Lượt HĐ Chuẩn (IP ≥ 12tr)</div></Label></div>
-                  </RadioGroup>
+                  <div className="flex flex-wrap gap-1.5">
+                    {([
+                      { value: 'per_contract' as ConditionType, label: 'Theo HĐ', icon: FileText, activeCls: 'bg-amber-500 text-white shadow-amber-200 shadow-md', inactiveCls: 'bg-amber-50 text-amber-700 border border-amber-200' },
+                      { value: 'total_fyp' as ConditionType, label: 'Tổng IP', icon: TrendingUp, activeCls: 'bg-amber-500 text-white shadow-amber-200 shadow-md', inactiveCls: 'bg-amber-50 text-amber-700 border border-amber-200' },
+                      { value: 'activity_round' as ConditionType, label: 'Lượt HĐ', sublabel: '≥3tr', icon: Zap, activeCls: 'bg-orange-500 text-white shadow-orange-200 shadow-md', inactiveCls: 'bg-orange-50 text-orange-700 border border-orange-200' },
+                      { value: 'activity_round_standard' as ConditionType, label: 'Lượt Chuẩn', sublabel: '≥12tr', icon: Zap, activeCls: 'bg-orange-500 text-white shadow-orange-200 shadow-md', inactiveCls: 'bg-orange-50 text-orange-700 border border-orange-200' },
+                    ]).map(({ value, label, sublabel, icon: Icon, activeCls, inactiveCls }) => (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() => {
+                          const newCt = value;
+                          setConditionType(newCt);
+                          if (isActivityRoundMode(newCt)) {
+                            setTargetType('nhom');
+                            setBonusTiers([
+                              { id: crypto.randomUUID(), minFYP: 0, maxFYP: 2, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 },
+                              { id: crypto.randomUUID(), minFYP: 3, maxFYP: 5, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 },
+                              { id: crypto.randomUUID(), minFYP: 6, maxFYP: 9, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 },
+                              { id: crypto.randomUUID(), minFYP: 10, maxFYP: null, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 },
+                            ]);
+                          } else if (newCt === 'nyd_activity') {
+                            setBonusTiers([
+                              { id: crypto.randomUUID(), minFYP: 0, maxFYP: 2, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 },
+                              { id: crypto.randomUUID(), minFYP: 3, maxFYP: 5, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 },
+                              { id: crypto.randomUUID(), minFYP: 6, maxFYP: null, bonusAmount: 0, bonusType: 'money_per_round', bonusText: '', bonusPercent: 0 },
+                            ]);
+                          } else {
+                            setBonusTiers([
+                              { id: crypto.randomUUID(), minFYP: 0, maxFYP: 20000000, bonusAmount: 500000, bonusType: 'money', bonusText: '', bonusPercent: 0 },
+                              { id: crypto.randomUUID(), minFYP: 20000000, maxFYP: 50000000, bonusAmount: 1500000, bonusType: 'money', bonusText: '', bonusPercent: 0 },
+                              { id: crypto.randomUUID(), minFYP: 50000000, maxFYP: 100000000, bonusAmount: 3000000, bonusType: 'money', bonusText: '', bonusPercent: 0 },
+                              { id: crypto.randomUUID(), minFYP: 100000000, maxFYP: null, bonusAmount: 5000000, bonusType: 'money', bonusText: '', bonusPercent: 0 },
+                            ]);
+                          }
+                        }}
+                        className={`
+                          inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold
+                          transition-all duration-200 ease-out cursor-pointer select-none
+                          active:scale-95 active:shadow-none
+                          ${conditionType === value ? activeCls : inactiveCls}
+                          hover:scale-105
+                        `}
+                      >
+                        <Icon className="w-3 h-3" />
+                        {label}
+                        {sublabel && <span className="text-[9px] opacity-80">{sublabel}</span>}
+                      </button>
+                    ))}
+                  </div>
                 )}
               </div>
             </div>
