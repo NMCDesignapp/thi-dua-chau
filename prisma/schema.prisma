@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+}
+
+model Contract {
+  id              String   @id @default(cuid())
+  contractNumber  String   @unique  // Số hợp đồng (column 10)
+  agentCode       String              // Mã ĐL (column 7)
+  agentName       String              // Tên (column 8)
+  position        String              // Chức vụ - prefer column 30 (CHỨC VỤ), fallback column 8
+  ban             String              // Ban (column 2)
+  nhom            String              // Nhóm - tên MC NHÓM (column 22)
+  maNhom          String              // Mã Ban/Nhóm (column 4)
+  leaderAgentCode String    @default("") // Mã trưởng Ban/Nhóm (column 5) - leader's agent code
+  recruiterCode   String    @default("") // Mã đại lý tuyển dụng (column 28)
+  startDate       DateTime?           // Ngày bắt đầu làm việc (column 9 for TVVm check)
+  effectiveDate   DateTime            // Ngày hiệu lực = Ngày bắt đầu thi đua (column 12)
+  issueDate       DateTime            // Ngày phát hành (column 13)
+  fyp             Float               // PĐT + 10% ĐT = FYP (column 13)
+  afyp            Float    @default(0) // AFYP (column 20)
+  tinhLuot        Float    @default(0) // Giá trị TÍNH LƯỢT (column 27)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Contest {
+  id              String   @id @default(cuid())
+  title           String                    // Tên chương trình thi đua
+  startDate       DateTime                  // Ngày hiệu lực từ
+  endDate         DateTime                  // Ngày hiệu lực đến
+  issueDate       DateTime?                 // Ngày phát hành (lọc theo ngày PH)
+  conditionType   String   @default("per_contract") // per_contract | total_fyp
+  targetType      String   @default("tvv")           // tvv | nhom
+  bonusTiers      String                     // JSON string của mảng BonusTier
+  participants    String   @default("[]")    // JSON string của mảng Participant
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
